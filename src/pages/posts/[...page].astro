@@ -4,10 +4,10 @@ import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
-import Main from "@/components/Main.astro";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
+import TagTree from "@/components/TagTree.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
@@ -18,6 +18,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
@@ -25,16 +26,46 @@ const t = useTranslations(locale);
 
 <Layout title={`${t.pages.postsTitle} | ${config.site.title}`}>
   <Header />
-
   <Breadcrumb />
 
-  <Main pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
-    <ul>
-      {page.data.map(data => <Card {...data} />)}
-    </ul>
-  </Main>
+  <div class="posts-with-sidebar app-layout pb-4">
+    <TagTree posts={allPosts} />
+
+    <main id="main-content" data-backUrl={Astro.url.pathname}>
+      <h1 class="text-2xl font-semibold sm:text-3xl">{t.pages.postsTitle}</h1>
+      <p class="mt-2 mb-6 italic">{t.pages.postsDesc}</p>
+      <ul>
+        {page.data.map(data => <Card {...data} />)}
+      </ul>
+    </main>
+  </div>
 
   <Pagination {page} />
-
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>
+
+<style>
+  .posts-with-sidebar {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .posts-with-sidebar {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const mainContent = document.querySelector<HTMLElement>("#main-content");
+    const backUrl = mainContent?.dataset?.backurl;
+    if (backUrl) sessionStorage.setItem("backUrl", backUrl);
+  });
+</script>
