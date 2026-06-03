@@ -1,37 +1,29 @@
 ---
 title: "About"
-description: "A bit about me and this blog."
+description: "BI & Data Consultant based in the Netherlands, writing about Microsoft Fabric, Power BI, and data engineering."
 ---
 
-AstroPaper is a minimal, accessible and SEO-friendly blog theme built with [Astro](https://astro.build/) and [Tailwind CSS](https://tailwindcss.com/).
+## Hi, I'm Tiger An
 
-![Astro Paper](@/assets/images/astropaper-og.jpg)
+I'm a BI & Data Consultant based in the Netherlands, specializing in Microsoft Fabric, Power BI, and data engineering on top of Dynamics 365 Finance & Operations.
 
-AstroPaper provides a solid foundation for blogs, or even portfolios\_ with full markdown support, built-in dark mode, and a clean layout that works out-of-the-box.
+I work with mid-market companies to design and build data platforms — from raw D365 data all the way through to trusted, decision-ready reports.
 
-The blog posts in this theme also serve as guides, docs or example articles\_ making AstroPaper a flexible starting point for your next content-driven site.
+## What I work with
 
-## Features
+- **Microsoft Fabric** — Lakehouse architecture, Medallion design, OneLake
+- **Power BI** — Semantic model development, DAX, report design, version control with PBIP
+- **Dynamics 365 F&O** — Data structures, CCS module, financial and logistics data
+- **SQL & Python** — Data transformation, analysis, and automation
 
-AstroPaper comes with a set of useful features that make content publishing easy and effective:
+## This blog
 
-- SEO-friendly
-- Fast performance
-- Light & dark mode
-- Highly customizable
-- Organizable blog posts
-- Responsive & accessible
-- Static search with [PageFind](https://pagefind.app/)
-- Automatic social image generation
+I write about things I run into in real projects — patterns that work, mistakes to avoid, and tooling that makes BI development less painful.
 
-and so much more.
+Topics include Power BI best practices, Microsoft Fabric architecture, D365 data modeling, and the occasional opinion on how analytics work should be done.
 
-## Show your support
+## Connect
 
-If you like [AstroPaper](https://github.com/satnaing/astro-paper), consider giving it a star ⭐️.
-
-Found a bug 🐛 or have an improvement ✨ in mind? Feel free to open an [issue](https://github.com/satnaing/astro-paper/issues), submit a [pull request](https://github.com/satnaing/astro-paper/pulls) or start a [discussion](https://github.com/satnaing/astro-paper/discussions).
-
-If you find this theme helpful, you can also [sponsor me on GitHub](https://github.com/sponsors/satnaing) or [buy me a coffee](https://buymeacoffee.com/satnaing) to show your support — every penny counts.
-
-Kyay zuu! 🙏🏼
+- [LinkedIn](https://www.linkedin.com/in/tiger627)
+- [GitHub](https://github.com/tiger627)
+- [Email](mailto:tiger.an.8686@gmail.com)
