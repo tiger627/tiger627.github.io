@@ -3,7 +3,6 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
-import Breadcrumb from "@/components/Breadcrumb.astro";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
@@ -26,7 +25,6 @@ const t = useTranslations(locale);
 
 <Layout title={`${t.pages.postsTitle} | ${config.site.title}`}>
   <Header />
-  <Breadcrumb />
 
   <div class="posts-with-sidebar app-layout pb-4">
     <TagTree posts={allPosts} />
