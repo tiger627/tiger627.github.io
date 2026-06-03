@@ -30,7 +30,7 @@ const tags = Object.keys(grouped).sort();
           <ul class="post-list">
             {grouped[tag].map(post => (
               <li>
-                <a href={`/posts/${post.slug ?? post.id}/`}>{post.data.title}</a>
+                <a href={`/posts/${post.id}/`}>{post.data.title}</a>
               </li>
             ))}
           </ul>
