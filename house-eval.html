@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>再看看 · 荷兰买房评估工具</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f8fc;
+      --white: #ffffff;
+      --primary: #4f7dff;
+      --primary-light: #eef2ff;
+      --accent: #ff7043;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --radius: 14px;
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+    /* ── HEADER ── */
+    header { background: var(--white); border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
+    .logo { font-size: 24px; }
+    .brand { font-size: 20px; font-weight: 700; color: var(--text); }
+    .brand span { color: var(--primary); }
+    .tagline { margin-left: auto; font-size: 13px; color: var(--muted); }
+
+    /* ── TABS ── */
+    .tab-nav { background: var(--white); border-bottom: 1px solid var(--border); display: flex; padding: 0 24px; gap: 0; }
+    .tab-btn { padding: 14px 24px; font-size: 15px; font-weight: 600; color: var(--muted); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; transition: all .15s; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ── LAYOUT ── */
+    main { max-width: 900px; margin: 36px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 24px; }
+
+    .hero { text-align: center; padding: 8px 0 4px; }
+    .hero h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .hero p { color: var(--muted); font-size: 15px; }
+
+    /* ── CARD ── */
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .card-title .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .icon-blue { background: var(--primary-light); }
+    .icon-orange { background: #fff3ee; }
+    .icon-green { background: #f0fdf4; }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 13px; font-weight: 600; color: var(--muted); }
+    input, select { border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 15px; color: var(--text); background: var(--white); transition: border-color .15s; outline: none; width: 100%; }
+    input:focus, select:focus { border-color: var(--primary); }
+    .input-prefix { position: relative; }
+    .input-prefix span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; }
+    .input-prefix input { padding-left: 28px; }
+
+    /* ── SLIDER ── */
+    .slider-row { display: flex; flex-direction: column; gap: 6px; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+    input[type=range] { -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--border); border: none; padding: 0; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary); cursor: pointer; border: 2px solid white; box-shadow: 0 1px 4px rgba(79,125,255,.4); }
+
+    /* ── CHECKLIST ── */
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .15s; user-select: none; }
+    .check-item:hover { border-color: var(--primary); background: var(--primary-light); }
+    .check-item.checked { border-color: var(--primary); background: var(--primary-light); }
+    .check-box { width: 20px; height: 20px; min-width: 20px; border: 2px solid var(--border); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-top: 1px; transition: all .15s; }
+    .check-item.checked .check-box { background: var(--primary); border-color: var(--primary); color: white; }
+    .check-label { font-size: 14px; font-weight: 600; }
+    .check-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── BUTTON ── */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 32px; border-radius: 10px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: all .15s; }
+    .btn-primary { background: var(--primary); color: white; width: 100%; }
+    .btn-primary:hover { background: #3d6ce0; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,125,255,.3); }
+
+    /* ── RESULT ── */
+    .score-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0; }
+    .score-ring { width: 140px; height: 140px; position: relative; }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .score-num { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 36px; font-weight: 800; text-align: center; }
+    .score-label { font-size: 18px; font-weight: 700; margin-top: 4px; }
+    .score-sub { font-size: 13px; color: var(--muted); }
+    .verdict-banner { border-radius: 12px; padding: 18px 22px; font-size: 15px; line-height: 1.7; }
+    .verdict-green { background: #f0fdf4; border: 1.5px solid #86efac; color: #166534; }
+    .verdict-yellow { background: #fffbeb; border: 1.5px solid #fcd34d; color: #92400e; }
+    .verdict-red { background: #fef2f2; border: 1.5px solid #fca5a5; color: #991b1b; }
+    .dim-list { display: flex; flex-direction: column; gap: 10px; }
+    .dim-row { display: flex; align-items: center; gap: 12px; }
+    .dim-label { font-size: 14px; font-weight: 600; min-width: 120px; }
+    .dim-bar-wrap { flex: 1; background: var(--border); border-radius: 6px; height: 8px; overflow: hidden; }
+    .dim-bar { height: 100%; border-radius: 6px; transition: width .5s ease; }
+    .bar-green { background: var(--green); }
+    .bar-yellow { background: var(--yellow); }
+    .bar-red { background: var(--red); }
+    .dim-score { font-size: 13px; font-weight: 700; min-width: 32px; text-align: right; }
+    .sources-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .source-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--muted); text-decoration: none; transition: all .15s; }
+    .source-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .tips-list { display: flex; flex-direction: column; gap: 10px; }
+    .tip-item { display: flex; gap: 10px; padding: 12px; background: var(--bg); border-radius: 10px; font-size: 13px; line-height: 1.6; }
+    .tip-item .tip-icon { font-size: 16px; min-width: 20px; }
+    .reset-btn { background: none; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 24px; font-size: 14px; color: var(--muted); cursor: pointer; margin-top: 8px; transition: all .15s; }
+    .reset-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .error-msg { display: none; background: #fef2f2; border: 1.5px solid #fca5a5; color: #991b1b; border-radius: 10px; padding: 12px 16px; font-size: 14px; margin-top: -8px; }
+
+    /* ── MARKET TAB ── */
+    .chart-section { display: flex; flex-direction: column; gap: 24px; }
+    .chart-wrap { position: relative; height: 320px; }
+    .city-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .city-btn { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); cursor: pointer; transition: all .15s; }
+    .city-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .city-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 4px; }
+    .stat-card { background: var(--bg); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-val { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .data-note { font-size: 12px; color: var(--muted); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+    .range-btns { display: flex; gap: 6px; margin-left: auto; }
+    .range-btn { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); cursor: pointer; transition: all .15s; }
+    .range-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .chart-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .chart-title { font-size: 15px; font-weight: 700; }
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #ecfdf5; color: #059669; }
+
+    /* ── CITY DEEP TAB ── */
+    .deep-city-selector { display: flex; flex-wrap: wrap; gap: 10px; }
+    .deep-city-btn { padding: 10px 22px; border-radius: 24px; font-size: 14px; font-weight: 700; border: 2px solid var(--border); background: var(--white); color: var(--muted); cursor: pointer; transition: all .15s; }
+    .deep-city-btn.active { color: white !important; border-color: transparent !important; }
+    .deep-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .deep-kpi { background: var(--bg); border-radius: 12px; padding: 16px; }
+    .deep-kpi-val { font-size: 20px; font-weight: 800; }
+    .deep-kpi-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .deep-kpi-sub { font-size: 12px; font-weight: 600; margin-top: 4px; }
+    .district-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .district-card { border: 2px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all .15s; user-select: none; }
+    .district-card:hover { box-shadow: 0 2px 10px rgba(79,125,255,.12); }
+    .district-card.dc-active { background: rgba(79,125,255,0.04); }
+    .district-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+    .district-name { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; }
+    .district-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .d-stat-val { font-size: 15px; font-weight: 800; }
+    .d-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .yoy-pos { color: var(--green); }
+    .yoy-neg { color: var(--red); }
+    .price-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; }
+    .badge-hot { background: #fef2f2; color: #991b1b; }
+    .badge-mid { background: #fffbeb; color: #92400e; }
+    .badge-afford { background: #f0fdf4; color: #166534; }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .tagline { display: none; }
+      .stat-cards { grid-template-columns: 1fr 1fr; }
+      .deep-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .district-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">&#127968;</div>
+  <div class="brand">再看看 <span>&#183;</span> 荷兰买房</div>
+  <div class="tagline">CBS &#183; Kadaster &#183; NVM</div>
+</header>
+
+<!-- Tab Navigation -->
+<div class="tab-nav">
+  <button class="tab-btn active" id="tab-eval-btn" onclick="switchTab('eval')">&#128269; 买房评估</button>
+  <button class="tab-btn" id="tab-market-btn" onclick="switchTab('market')">&#128202; 市场趋势</button>
+  <button class="tab-btn" id="tab-city-btn" onclick="switchTab('city')">&#127968; 城市深析</button>
+</div>
+
+<!-- ════════════════════════════ TAB 1: EVAL ════════════════════════════ -->
+<div id="tab-eval">
+<main>
+  <div class="hero">
+    <h1>现在适合在荷兰买房吗？</h1>
+    <p>输入你的真实情况，我们帮你做一次理性分析 — 不卖焦虑，只看数据。</p>
+  </div>
+
+  <div id="form-section">
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">&#128176;</div>个人财务状况</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>税后年收入（欧元）</label>
+          <div class="input-prefix"><span>&#8364;</span><input type="number" id="income" placeholder="例如 65000" min="0" /></div>
+        </div>
+        <div class="form-group">
+          <label>当前储蓄 / 首付资金（欧元）</label>
+          <div class="input-prefix"><span>&#8364;</span><input type="number" id="savings" placeholder="例如 80000" min="0" /></div>
+        </div>
+        <div class="form-group">
+          <label>目标房价预算（欧元）</label>
+          <div class="input-prefix"><span>&#8364;</span><input type="number" id="budget" placeholder="例如 400000" min="0" /></div>
+        </div>
+        <div class="form-group">
+          <label>现有月供 / 其他贷款（欧元/月）</label>
+          <div class="input-prefix"><span>&#8364;</span><input type="number" id="debts" placeholder="0" min="0" value="0" /></div>
+        </div>
+        <div class="form-group full">
+          <label>目标城市</label>
+          <select id="city">
+            <option value="den_haag">Den Haag（海牙）</option>
+            <option value="amsterdam">Amsterdam（阿姆斯特丹）</option>
+            <option value="rotterdam">Rotterdam（鹿特丹）</option>
+            <option value="utrecht">Utrecht（乌得勒支）</option>
+            <option value="other">其他城市</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-orange">&#128197;</div>生活规划</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>你计划在荷兰住多少年？</label>
+          <div class="slider-row">
+            <input type="range" id="years" min="1" max="15" value="5" oninput="document.getElementById('years-val').textContent=this.value+' 年'" />
+            <div class="slider-labels"><span>1 年</span><span id="years-val" style="font-weight:700;color:var(--text)">5 年</span><span>15 年</span></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>工作稳定性</label>
+          <select id="job">
+            <option value="permanent">永久合同（vast contract）</option>
+            <option value="flex">灵活合同 / ZZP</option>
+            <option value="uncertain">尚不确定</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>买房的主要目的</label>
+          <select id="purpose">
+            <option value="live">自住（长期）</option>
+            <option value="invest">投资增值</option>
+            <option value="hybrid">自住 + 将来出租</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">&#128202;</div>市场了解程度（勾选你已做的功课）</div>
+      <div class="checklist" id="checklist">
+        <div class="check-item" onclick="toggleCheck(this)" data-key="c0">
+          <div class="check-box">&#10003;</div>
+          <div><div class="check-label">查过 CBS / Kadaster 房价指数趋势</div><div class="check-desc">不只是"平均房价"，而是看了指数走势</div></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)" data-key="c1">
+          <div class="check-box">&#10003;</div>
+          <div><div class="check-label">研究过目标城市 / 区域的具体数据</div><div class="check-desc">用过 Huizendata 或 OpenKadaster 查过具体成交价</div></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)" data-key="c2">
+          <div class="check-box">&#10003;</div>
+          <div><div class="check-label">了解当前利率水平及对月供的影响</div><div class="check-desc">算过不同利率下月供占收入的比例</div></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)" data-key="c3">
+          <div class="check-box">&#10003;</div>
+          <div><div class="check-label">知道 NVM 最近季度报告的结论</div><div class="check-desc">了解市场竞争热度、成交量变化</div></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)" data-key="c4">
+          <div class="check-box">&#10003;</div>
+          <div><div class="check-label">已预约或咨询过按揭顾问（hypotheekadviseur）</div><div class="check-desc">知道自己实际能贷多少（而不是估算）</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-msg" id="error-msg">请填写收入、储蓄和目标房价后再评估。</div>
+    <button class="btn btn-primary" id="eval-btn">&#128269; 开始评估</button>
+  </div>
+
+  <div id="result" style="display:none">
+    <div class="card" style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+      <div class="score-ring-wrap">
+        <div class="score-ring">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="58" fill="none" stroke="#e2e8f0" stroke-width="12"/>
+            <circle id="score-arc" cx="70" cy="70" r="58" fill="none" stroke="#4f7dff" stroke-width="12" stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke-linecap="round"/>
+          </svg>
+          <div class="score-num" id="score-num">—</div>
+        </div>
+        <div class="score-label" id="score-label">—</div>
+        <div class="score-sub">综合买房准备度</div>
+      </div>
+      <div style="flex:1;min-width:200px;"><div id="verdict-banner" class="verdict-banner"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-blue">&#128208;</div>各维度评分</div>
+      <div class="dim-list" id="dim-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-orange">&#128161;</div>下一步建议</div>
+      <div class="tips-list" id="tips-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="icon icon-green">&#128279;</div>推荐数据来源</div>
+      <div class="sources-row">
+        <a class="source-chip" href="https://www.cbs.nl/en-gb/figures/detail/83906ENG" target="_blank">&#128202; CBS StatLine</a>
+        <a class="source-chip" href="https://www.kadaster.nl/zakelijk/vastgoedinformatie/vastgoedcijfers/vastgoeddashboard" target="_blank">&#127963; Kadaster 仪表盘</a>
+        <a class="source-chip" href="https://www.nvm.nl/wonen/marktinformatie-wonen/" target="_blank">&#127970; NVM 季度报告</a>
+        <a class="source-chip" href="https://monitor-koopwoningmarkt.nl/dashboard-koopwoningmarkt/" target="_blank">&#128200; Monitor Koopwoningmarkt</a>
+        <a class="source-chip" href="https://www.kadasterdata.nl/huizendata/" target="_blank">&#128506; Huizendata</a>
+        <a class="source-chip" href="https://openkadaster.com/" target="_blank">&#128269; OpenKadaster</a>
+      </div>
+    </div>
+
+    <div style="text-align:center;"><button class="reset-btn" id="reset-btn">&#8592; 重新评估</button></div>
+  </div>
+</main>
+</div><!-- /tab-eval -->
+
+<!-- ════════════════════════════ TAB 2: MARKET ════════════════════════════ -->
+<div id="tab-market" style="display:none">
+<main>
+
+  <!-- 统计摘要 -->
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-latest-idx">—</div>
+      <div class="stat-lbl">2025 房价指数<br>(2020=100)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-latest-price">—</div>
+      <div class="stat-lbl">2025 全国均价</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-change">—</div>
+      <div class="stat-lbl">2026 Q1 最新指数</div>
+    </div>
+  </div>
+
+  <!-- Chart 1: CBS 全国房价指数 -->
+  <div class="card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">&#127970; 荷兰全国房价指数（2020=100）</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">数据来源：CBS 83906ENG + 85773ENG · 最新数据：2026 Q1</div>
+      </div>
+      <div class="range-btns" id="idx-range-btns">
+        <button class="range-btn" onclick="setIdxRange(10)">10年</button>
+        <button class="range-btn active" onclick="setIdxRange(20)">20年</button>
+        <button class="range-btn" onclick="setIdxRange(999)">全部</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="chart-index"></canvas></div>
+    <div class="data-note">&#128204; 指数比平均价格更能反映真实价格趋势（不受房型结构变化影响）· 基准年 2020=100 · 2026 Q1 为最新季度数据点</div>
+  </div>
+
+  <!-- Chart 2: 城市平均房价 -->
+  <div class="card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">&#127968; 各城市平均成交价对比</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">数据来源：NVM（荷兰房产中介协会）年度报告</div>
+      </div>
+      <div class="range-btns" id="city-range-btns">
+        <button class="range-btn" onclick="setCityRange(5)">5年</button>
+        <button class="range-btn active" onclick="setCityRange(10)">10年</button>
+        <button class="range-btn" onclick="setCityRange(999)">全部</button>
+      </div>
+    </div>
+    <div class="city-filters" id="city-filters">
+      <button class="city-btn active" data-city="all" onclick="toggleCity(this)">全部城市</button>
+      <button class="city-btn" data-city="amsterdam" onclick="toggleCity(this)" style="border-color:#6366f1;color:#6366f1">Amsterdam</button>
+      <button class="city-btn" data-city="den_haag" onclick="toggleCity(this)" style="border-color:#0ea5e9;color:#0ea5e9">Den Haag</button>
+      <button class="city-btn" data-city="rotterdam" onclick="toggleCity(this)" style="border-color:#f59e0b;color:#f59e0b">Rotterdam</button>
+      <button class="city-btn" data-city="utrecht" onclick="toggleCity(this)" style="border-color:#22c55e;color:#22c55e">Utrecht</button>
+      <button class="city-btn" data-city="national" onclick="toggleCity(this)" style="border-color:#64748b;color:#64748b">全国均值</button>
+    </div>
+    <div class="chart-wrap"><canvas id="chart-cities"></canvas></div>
+    <div class="data-note">&#128204; 城市数据为 NVM 会员成交均价，与全国 CBS 口径略有差异 · 仅供参考</div>
+  </div>
+
+  <!-- Chart 3: 成交量 -->
+  <div class="card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">&#128200; 全国年度成交套数</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">数据来源：CBS · 成交量是判断市场热度的核心指标</div>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="chart-volume"></canvas></div>
+    <div class="data-note">&#128204; 2009年金融危机后成交量大幅萎缩 · 2016–2021年高峰 · 2022年后利率上升带来量价双降</div>
+  </div>
+
+  <!-- ── 分割线 ── -->
+  <div style="display:flex;align-items:center;gap:12px;margin:8px 0;">
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+    <div style="font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap;">&#128302; 价格预测</div>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+
+  <!-- PRED CARD 1: 趋势外推 -->
+  <div class="card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">&#128200; 房价指数趋势外推</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">基于 CBS 历史数据的线性回归 · 包含 90% 预测置信区间</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:20px;align-items:flex-end;">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">回归窗口</div>
+        <div class="range-btns" id="pred-window-btns">
+          <button class="range-btn" onclick="setPredWindow(5)">近5年</button>
+          <button class="range-btn active" onclick="setPredWindow(10)">近10年</button>
+          <button class="range-btn" onclick="setPredWindow(999)">全周期</button>
+        </div>
+      </div>
+      <div style="flex:1;min-width:180px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">预测年限：<span id="pred-horizon-val" style="color:var(--primary)">3 年</span></div>
+        <input type="range" id="pred-horizon" min="1" max="5" value="3"
+          style="width:100%"
+          oninput="document.getElementById('pred-horizon-val').textContent=this.value+' 年';buildPredChart()" />
+      </div>
+    </div>
+
+    <div class="chart-wrap" style="height:300px;"><canvas id="chart-predict"></canvas></div>
+
+    <!-- 预测摘要 -->
+    <div id="pred-summary" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;"></div>
+    <div class="data-note" style="margin-top:14px;">&#9888; 预测基于历史趋势外推，不考虑政策变化、利率冲击等外部因素。实际走势可能显著偏离。</div>
+  </div>
+
+  <!-- PRED CARD 2: 情景模拟 -->
+  <div class="card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">&#127919; 多情景价格模拟（2026–2028）</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">不同宏观假设下的荷兰全国房价走势模拟</div>
+      </div>
+    </div>
+
+    <!-- 情景说明卡片 -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;" id="scenario-cards">
+      <div class="scenario-card" data-s="bull" onclick="toggleScenario(this)" style="cursor:pointer;padding:14px;border-radius:12px;border:2px solid #22c55e;background:#f0fdf4;">
+        <div style="font-weight:700;color:#166534;font-size:13px;">&#128200; 乐观情景</div>
+        <div style="font-size:12px;color:#166534;margin-top:6px;line-height:1.6;">利率回落至 3% 以下<br>供给持续紧张<br>经济稳步增长</div>
+        <div style="font-size:11px;color:#166534;margin-top:8px;font-weight:600;">年均涨幅假设：+9–12%</div>
+      </div>
+      <div class="scenario-card" data-s="base" onclick="toggleScenario(this)" style="cursor:pointer;padding:14px;border-radius:12px;border:2px solid #4f7dff;background:#eef2ff;">
+        <div style="font-weight:700;color:#1e3a8a;font-size:13px;">&#128203; 基础情景</div>
+        <div style="font-size:12px;color:#1e3a8a;margin-top:6px;line-height:1.6;">利率稳定在 3.5–4%<br>供需基本平衡<br>经济温和复苏</div>
+        <div style="font-size:11px;color:#1e3a8a;margin-top:8px;font-weight:600;">年均涨幅假设：+5–8%</div>
+      </div>
+      <div class="scenario-card" data-s="bear" onclick="toggleScenario(this)" style="cursor:pointer;padding:14px;border-radius:12px;border:2px solid #ef4444;background:#fef2f2;">
+        <div style="font-weight:700;color:#991b1b;font-size:13px;">&#128201; 保守情景</div>
+        <div style="font-size:12px;color:#991b1b;margin-top:6px;line-height:1.6;">利率维持高位或上升<br>经济衰退风险<br>政策收紧（租房保护）</div>
+        <div style="font-size:11px;color:#991b1b;margin-top:8px;font-weight:600;">年均涨幅假设：-2% – +3%</div>
+      </div>
+    </div>
+
+    <div class="chart-wrap" style="height:280px;"><canvas id="chart-scenario"></canvas></div>
+
+    <div id="scenario-table" style="margin-top:20px;overflow-x:auto;"></div>
+    <div class="data-note" style="margin-top:14px;">&#128204; 情景参数来自 ECB 利率前瞻、NVM 市场报告及荷兰政府住房政策分析 · 点击情景卡片可切换显示/隐藏</div>
+  </div>
+
+</main>
+</div><!-- /tab-market -->
+
+<!-- ════════════════════════════ TAB 3: CITY DEEP ════════════════════════════ -->
+<div id="tab-city" style="display:none">
+<main>
+
+  <!-- City selector -->
+  <div class="card" style="padding:20px 28px;">
+    <div class="chart-title" style="margin-bottom:14px;">&#127968; 选择城市，查看区域深度数据</div>
+    <div class="deep-city-selector" id="deep-city-selector">
+      <button class="deep-city-btn" data-city="den_haag" onclick="switchDeepCity('den_haag')" style="border-color:#0ea5e9;color:#0ea5e9">Den Haag（海牙）</button>
+      <button class="deep-city-btn" data-city="amsterdam" onclick="switchDeepCity('amsterdam')" style="border-color:#6366f1;color:#6366f1">Amsterdam（阿姆）</button>
+      <button class="deep-city-btn" data-city="rotterdam" onclick="switchDeepCity('rotterdam')" style="border-color:#f59e0b;color:#f59e0b">Rotterdam（鹿特丹）</button>
+      <button class="deep-city-btn" data-city="utrecht" onclick="switchDeepCity('utrecht')" style="border-color:#22c55e;color:#22c55e">Utrecht（乌得勒支）</button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="deep-kpi-grid">
+    <div class="deep-kpi">
+      <div class="deep-kpi-val" id="dkpi-price">—</div>
+      <div class="deep-kpi-lbl">2025 均价（CBS Kadaster）</div>
+      <div class="deep-kpi-sub" id="dkpi-price-sub" style="color:var(--muted)">官方成交均价</div>
+    </div>
+    <div class="deep-kpi">
+      <div class="deep-kpi-val" id="dkpi-yoy">—</div>
+      <div class="deep-kpi-lbl">2024→2025 年度涨幅</div>
+      <div class="deep-kpi-sub" id="dkpi-yoy-sub">—</div>
+    </div>
+    <div class="deep-kpi">
+      <div class="deep-kpi-val" id="dkpi-5yr" style="color:var(--primary)">—</div>
+      <div class="deep-kpi-lbl">近5年涨幅（2020→2025）</div>
+      <div class="deep-kpi-sub" id="dkpi-5yr-sub" style="color:var(--muted)">—</div>
+    </div>
+    <div class="deep-kpi">
+      <div class="deep-kpi-val" id="dkpi-vs">—</div>
+      <div class="deep-kpi-lbl">相对全国均价</div>
+      <div class="deep-kpi-sub" id="dkpi-vs-sub" style="color:var(--muted)">—</div>
+    </div>
+  </div>
+
+  <!-- CBS Historical Trend Chart -->
+  <div class="card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">&#128200; 城市历史成交价（CBS Kadaster，1995–2025）</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">来源：CBS 市政级官方成交均价 vs 荷兰全国均价</div>
+      </div>
+    </div>
+    <div class="chart-wrap" style="height:300px;"><canvas id="chart-city-history"></canvas></div>
+    <div class="data-note">&#128204; CBS 市政数据包含该市全部类型住宅均价 · 2022年受高利率影响短暂回调，2024年起快速反弹至历史新高</div>
+  </div>
+
+  <!-- District bar chart -->
+  <div class="card">
+    <div class="chart-header" style="margin-bottom:14px;">
+      <div>
+        <div class="chart-title">&#127968; 各区 2025 均价对比（NVM 年度数据）</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">按价格高低排序 · 点击下方区域卡片可在走势图中切换显示</div>
+      </div>
+    </div>
+    <div class="chart-wrap" style="height:260px;"><canvas id="chart-district-bar"></canvas></div>
+  </div>
+
+  <!-- District cards grid -->
+  <div class="district-grid" id="district-grid"></div>
+
+  <!-- District trend chart -->
+  <div class="card">
+    <div class="chart-header" style="margin-bottom:8px;">
+      <div>
+        <div class="chart-title">&#128202; 各区历史价格走势（2020–2025）</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">点击区域卡片切换显示 / 隐藏 · 数据来源：NVM 季度报告推算</div>
+      </div>
+    </div>
+    <div class="chart-wrap" style="height:320px;"><canvas id="chart-district-trend"></canvas></div>
+    <div class="data-note">&#9888; 区域数据为 NVM 年度报告推算均值，与 Kadaster 成交数据可能有约 3–5% 偏差 · 仅供参考趋势方向</div>
+  </div>
+
+</main>
+</div><!-- /tab-city -->
+
+<script>
+(function() {
+
+  /* ═══════════════════════════════════════════
+     CBS 数据（年度，官方）
+     1995–2021: 83906ENG (2015=100) 换算至 2020=100（×100/141.9）
+     2022–2025: 85773ENG (2020=100) 原始值
+     2026 Q1:   85773ENG 最新季度
+  ══════════════════════════════════════════════ */
+  var CBS_DATA = [
+    {y:1995,idx:29.9,price:93750,vol:154568},
+    {y:1996,idx:33.2,price:102607,vol:175751},
+    {y:1997,idx:37.1,price:113163,vol:185634},
+    {y:1998,idx:41.1,price:124540,vol:192622},
+    {y:1999,idx:47.8,price:144778,vol:204538},
+    {y:2000,idx:56.6,price:172050,vol:189358},
+    {y:2001,idx:62.8,price:188397,vol:195737},
+    {y:2002,idx:66.9,price:199752,vol:198386},
+    {y:2003,idx:69.3,price:204829,vol:193406},
+    {y:2004,idx:72.3,price:212723,vol:191941},
+    {y:2005,idx:75.1,price:222706,vol:206629},
+    {y:2006,idx:78.6,price:235843,vol:209767},
+    {y:2007,idx:81.9,price:248325,vol:202401},
+    {y:2008,idx:84.4,price:254918,vol:182392},
+    {y:2009,idx:81.5,price:238259,vol:127532},
+    {y:2010,idx:79.6,price:239530,vol:126127},
+    {y:2011,idx:77.7,price:240059,vol:120739},
+    {y:2012,idx:72.7,price:226661,vol:117261},
+    {y:2013,idx:67.9,price:213353,vol:110094},
+    {y:2014,idx:68.5,price:222218,vol:153511},
+    {y:2015,idx:70.5,price:230194,vol:178293},
+    {y:2016,idx:74.0,price:243837,vol:214793},
+    {y:2017,idx:79.6,price:263295,vol:241860},
+    {y:2018,idx:86.8,price:287267,vol:218491},
+    {y:2019,idx:92.8,price:307978,vol:218595},
+    {y:2020,idx:100.0,price:334488,vol:235511},
+    {y:2021,idx:115.1,price:386714,vol:226087},
+    {y:2022,idx:130.4,price:428591,vol:193103},
+    {y:2023,idx:126.6,price:416153,vol:182403},
+    {y:2024,idx:137.7,price:450985,vol:206458},
+    {y:2025,idx:149.5,price:479527,vol:238695}
+  ];
+  // 2026 Q1 最新数据点（季度，非年度）
+  var CBS_2026Q1 = {label:'2026 Q1',idx:153.6,price:492199,vol:55949};
+
+  /* NVM 城市数据（年度均价，欧元） */
+  var CITY_DATA = {
+    amsterdam: [
+      {y:2010,p:281000},{y:2011,p:270000},{y:2012,p:252000},{y:2013,p:239000},
+      {y:2014,p:263000},{y:2015,p:297000},{y:2016,p:336000},{y:2017,p:392000},
+      {y:2018,p:446000},{y:2019,p:466000},{y:2020,p:476000},{y:2021,p:535000},
+      {y:2022,p:568000},{y:2023,p:521000},{y:2024,p:545000},{y:2025,p:578000}
+    ],
+    den_haag: [
+      {y:2010,p:216000},{y:2011,p:207000},{y:2012,p:192000},{y:2013,p:182000},
+      {y:2014,p:197000},{y:2015,p:215000},{y:2016,p:232000},{y:2017,p:263000},
+      {y:2018,p:304000},{y:2019,p:325000},{y:2020,p:341000},{y:2021,p:395000},
+      {y:2022,p:431000},{y:2023,p:399000},{y:2024,p:420000},{y:2025,p:448000}
+    ],
+    rotterdam: [
+      {y:2010,p:171000},{y:2011,p:163000},{y:2012,p:149000},{y:2013,p:141000},
+      {y:2014,p:155000},{y:2015,p:172000},{y:2016,p:193000},{y:2017,p:225000},
+      {y:2018,p:260000},{y:2019,p:284000},{y:2020,p:300000},{y:2021,p:355000},
+      {y:2022,p:391000},{y:2023,p:361000},{y:2024,p:385000},{y:2025,p:412000}
+    ],
+    utrecht: [
+      {y:2010,p:241000},{y:2011,p:232000},{y:2012,p:214000},{y:2013,p:202000},
+      {y:2014,p:220000},{y:2015,p:246000},{y:2016,p:269000},{y:2017,p:311000},
+      {y:2018,p:357000},{y:2019,p:381000},{y:2020,p:391000},{y:2021,p:455000},
+      {y:2022,p:494000},{y:2023,p:455000},{y:2024,p:478000},{y:2025,p:510000}
+    ],
+    national: CBS_DATA.filter(function(d){return d.y>=2010;}).map(function(d){return{y:d.y,p:d.price};})
+  };
+
+  var CITY_COLORS = {
+    amsterdam:'#6366f1',
+    den_haag:'#0ea5e9',
+    rotterdam:'#f59e0b',
+    utrecht:'#22c55e',
+    national:'#64748b'
+  };
+  var CITY_LABELS = {
+    amsterdam:'Amsterdam',
+    den_haag:'Den Haag',
+    rotterdam:'Rotterdam',
+    utrecht:'Utrecht',
+    national:'全国均值'
+  };
+
+  /* ═══ STATE ═══ */
+  var activeCities = ['amsterdam','den_haag','rotterdam','utrecht','national'];
+  var idxRange = 20;
+  var cityRange = 10;
+  var chartIndex = null;
+  var chartCities = null;
+  var chartVolume = null;
+
+  /* ═══ STATS ═══ */
+  function updateStats() {
+    var last = CBS_DATA[CBS_DATA.length - 1]; // 2025
+    document.getElementById('stat-latest-idx').textContent = last.idx.toFixed(1);
+    document.getElementById('stat-latest-price').textContent = 'EUR ' + Math.round(last.price/1000) + 'k';
+    document.getElementById('stat-change').textContent = CBS_2026Q1.idx.toFixed(1);
+  }
+
+  /* ═══ CHART 1: INDEX ═══ */
+  function buildIndexChart() {
+    var cutYear = CBS_DATA[CBS_DATA.length - 1].y - idxRange + 1;
+    var filtered = CBS_DATA.filter(function(d){return d.y >= cutYear;});
+    // 加入 2026 Q1 数据点
+    var labels = filtered.map(function(d){return String(d.y);}).concat([CBS_2026Q1.label]);
+    var idxData = filtered.map(function(d){return d.idx;}).concat([CBS_2026Q1.idx]);
+
+    var ctx = document.getElementById('chart-index').getContext('2d');
+    if (chartIndex) chartIndex.destroy();
+    chartIndex = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '房价指数 (CBS, 2020=100)',
+          data: idxData,
+          borderColor: '#4f7dff',
+          backgroundColor: 'rgba(79,125,255,0.08)',
+          borderWidth: 2.5,
+          pointRadius: function(ctx) { return ctx.dataIndex === labels.length - 1 ? 6 : 3; },
+          pointBackgroundColor: function(ctx) { return ctx.dataIndex === labels.length - 1 ? '#f59e0b' : '#4f7dff'; },
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.3,
+          segment: {
+            borderDash: function(ctx) { return ctx.p1DataIndex === labels.length - 1 ? [5,4] : []; }
+          }
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {display: false},
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var suffix = ctx.dataIndex === labels.length - 1 ? ' (Q1，季度)' : '';
+                return '指数：' + ctx.parsed.y.toFixed(1) + suffix;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: {color:'rgba(0,0,0,0.04)'} },
+          y: {
+            grid: {color:'rgba(0,0,0,0.04)'},
+            ticks: {callback: function(v){return v;}}
+          }
+        }
+      }
+    });
+  }
+
+  /* ═══ CHART 2: CITIES ═══ */
+  function buildCitiesChart() {
+    var cutYear = 2023 - cityRange + 1;
+    var allYears = [];
+    var src = CITY_DATA.amsterdam;
+    src.forEach(function(d){if(d.y>=cutYear) allYears.push(d.y);});
+    allYears.sort(function(a,b){return a-b;});
+    var labels = allYears.map(String);
+
+    var datasets = [];
+    activeCities.forEach(function(city) {
+      var cityArr = CITY_DATA[city];
+      if (!cityArr) return;
+      var vals = allYears.map(function(yr) {
+        var found = cityArr.find(function(d){return d.y===yr;});
+        return found ? found.p : null;
+      });
+      datasets.push({
+        label: CITY_LABELS[city],
+        data: vals,
+        borderColor: CITY_COLORS[city],
+        backgroundColor: CITY_COLORS[city] + '18',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        fill: false,
+        tension: 0.3,
+        spanGaps: true
+      });
+    });
+
+    var ctx = document.getElementById('chart-cities').getContext('2d');
+    if (chartCities) chartCities.destroy();
+    chartCities = new Chart(ctx, {
+      type: 'line',
+      data: {labels: labels, datasets: datasets},
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {position:'top', labels:{boxWidth:12,font:{size:12}}},
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var v = ctx.parsed.y;
+                return ctx.dataset.label + ': EUR ' + (v ? Math.round(v/1000) + 'k' : '—');
+              }
+            }
+          }
+        },
+        scales: {
+          x: {grid:{color:'rgba(0,0,0,0.04)'}},
+          y: {
+            grid:{color:'rgba(0,0,0,0.04)'},
+            ticks:{callback:function(v){return 'EUR ' + Math.round(v/1000) + 'k';}}
+          }
+        }
+      }
+    });
+  }
+
+  /* ═══ CHART 3: VOLUME ═══ */
+  function buildVolumeChart() {
+    var labels = CBS_DATA.map(function(d){return String(d.y);});
+    var vols = CBS_DATA.map(function(d){return d.vol;});
+    var ctx = document.getElementById('chart-volume').getContext('2d');
+    if (chartVolume) chartVolume.destroy();
+    chartVolume = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '成交套数',
+          data: vols,
+          backgroundColor: vols.map(function(v, i) {
+            return CBS_DATA[i].y >= 2022 ? 'rgba(239,68,68,0.6)' : 'rgba(79,125,255,0.55)';
+          }),
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {display: false},
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return '成交：' + ctx.parsed.y.toLocaleString() + ' 套';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {grid:{display:false}},
+          y: {
+            grid:{color:'rgba(0,0,0,0.04)'},
+            ticks:{callback:function(v){return Math.round(v/10000)+'万';}}
+          }
+        }
+      }
+    });
+  }
+
+  /* ═══ CONTROLS ═══ */
+  window.setIdxRange = function(r) {
+    idxRange = r;
+    document.querySelectorAll('#idx-range-btns .range-btn').forEach(function(b,i){
+      b.classList.toggle('active', [10,20,999][i]===r);
+    });
+    buildIndexChart();
+  };
+
+  window.setCityRange = function(r) {
+    cityRange = r;
+    document.querySelectorAll('#city-range-btns .range-btn').forEach(function(b,i){
+      b.classList.toggle('active', [5,10,999][i]===r);
+    });
+    buildCitiesChart();
+  };
+
+  window.toggleCity = function(btn) {
+    var city = btn.getAttribute('data-city');
+    if (city === 'all') {
+      activeCities = ['amsterdam','den_haag','rotterdam','utrecht','national'];
+      document.querySelectorAll('.city-btn').forEach(function(b){
+        b.classList.toggle('active', b.getAttribute('data-city')==='all');
+      });
+    } else {
+      btn.classList.toggle('active');
+      document.querySelector('[data-city="all"]').classList.remove('active');
+      activeCities = [];
+      document.querySelectorAll('.city-btn:not([data-city="all"])').forEach(function(b){
+        if (b.classList.contains('active')) activeCities.push(b.getAttribute('data-city'));
+      });
+      if (activeCities.length === 0) {
+        activeCities = ['amsterdam','den_haag','rotterdam','utrecht','national'];
+        document.querySelectorAll('.city-btn').forEach(function(b){
+          b.classList.toggle('active', b.getAttribute('data-city')==='all');
+        });
+      }
+    }
+    buildCitiesChart();
+  };
+
+  /* ═══════════════════════════════════════════
+     PREDICTION ENGINE
+  ══════════════════════════════════════════════ */
+  var predWindow = 10;
+  var activeScenarios = ['bull','base','bear'];
+  var chartPredict = null;
+  var chartScenario = null;
+
+  // 线性回归（最小二乘）
+  function linReg(xs, ys) {
+    var n = xs.length;
+    var mx = xs.reduce(function(a,b){return a+b;},0)/n;
+    var my = ys.reduce(function(a,b){return a+b;},0)/n;
+    var num = 0, den = 0;
+    for (var i=0;i<n;i++) { num += (xs[i]-mx)*(ys[i]-my); den += (xs[i]-mx)*(xs[i]-mx); }
+    var slope = den ? num/den : 0;
+    var intercept = my - slope*mx;
+    // 残差标准误
+    var sse = 0;
+    for (var j=0;j<n;j++) { var e=(ys[j]-(slope*xs[j]+intercept)); sse+=e*e; }
+    var se = Math.sqrt(sse/Math.max(n-2,1));
+    return {slope:slope, intercept:intercept, se:se, mx:mx, ssx:den, n:n};
+  }
+
+  // 某预测点的 90% 预测区间半宽
+  function predInterval(reg, x) {
+    var t = 1.645; // 90% 单侧 1.645, 双侧 ~1.72，用 1.8 更保守
+    var leverage = 1 + 1/reg.n + Math.pow(x-reg.mx,2)/reg.ssx;
+    return t * reg.se * Math.sqrt(leverage);
+  }
+
+  window.setPredWindow = function(w) {
+    predWindow = w;
+    document.querySelectorAll('#pred-window-btns .range-btn').forEach(function(b,i){
+      b.classList.toggle('active', [5,10,999][i]===w);
+    });
+    buildPredChart();
+  };
+
+  window.buildPredChart = function() {
+    var horizon = parseInt(document.getElementById('pred-horizon').value,10) || 3;
+    var lastY = 2025;
+    var cutYear = lastY - predWindow + 1;
+    var hist = CBS_DATA.filter(function(d){return d.y>=cutYear;});
+    var xs = hist.map(function(d){return d.y;});
+    var ys = hist.map(function(d){return d.idx;});
+
+    var reg = linReg(xs, ys);
+
+    // 历史标签（含 2026 Q1）
+    var histLabels = CBS_DATA.map(function(d){return String(d.y);});
+    histLabels.push(CBS_2026Q1.label);
+    var histIdx = CBS_DATA.map(function(d){return d.idx;});
+    histIdx.push(CBS_2026Q1.idx);
+
+    // 未来预测点
+    var futureYears = [];
+    for (var y=lastY+1; y<=lastY+horizon; y++) futureYears.push(y);
+    var futureLabels = futureYears.map(String);
+    var futureBase = futureYears.map(function(y){return Math.round((reg.slope*y+reg.intercept)*10)/10;});
+    var futureHi   = futureYears.map(function(y,i){return Math.round((futureBase[i]+predInterval(reg,y))*10)/10;});
+    var futureLo   = futureYears.map(function(y,i){return Math.round(Math.max(futureBase[i]-predInterval(reg,y),0)*10)/10;});
+
+    var allLabels = histLabels.concat(futureLabels);
+    var splitIdx = histLabels.length - 1; // 最后一个历史点
+
+    // 历史数据延伸到预测起点
+    var histFull = histIdx.concat(new Array(futureYears.length).fill(null));
+    // 预测线：从最后历史点开始
+    var baseFull = new Array(histLabels.length-1).fill(null).concat([histIdx[histLabels.length-1]]).concat(futureBase);
+    var hiFull   = new Array(histLabels.length-1).fill(null).concat([histIdx[histLabels.length-1]]).concat(futureHi);
+    var loFull   = new Array(histLabels.length-1).fill(null).concat([histIdx[histLabels.length-1]]).concat(futureLo);
+
+    var ctx = document.getElementById('chart-predict').getContext('2d');
+    if (chartPredict) chartPredict.destroy();
+    chartPredict = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: allLabels,
+        datasets: [
+          {
+            label: '历史指数', data: histFull,
+            borderColor:'#4f7dff', backgroundColor:'rgba(79,125,255,0.07)',
+            borderWidth:2.5, pointRadius:2, fill:true, tension:0.3, spanGaps:false
+          },
+          {
+            label: '90% 上限', data: hiFull,
+            borderColor:'rgba(245,158,11,0.4)', backgroundColor:'rgba(245,158,11,0.12)',
+            borderWidth:1.5, borderDash:[4,3], pointRadius:0, fill:'+1', tension:0.3, spanGaps:false
+          },
+          {
+            label: '基础预测', data: baseFull,
+            borderColor:'#f59e0b', backgroundColor:'transparent',
+            borderWidth:2.5, borderDash:[6,4], pointRadius:function(c){return c.dataIndex>splitIdx?4:0;},
+            pointBackgroundColor:'#f59e0b', fill:false, tension:0.3, spanGaps:false
+          },
+          {
+            label: '90% 下限', data: loFull,
+            borderColor:'rgba(245,158,11,0.4)', backgroundColor:'rgba(245,158,11,0.12)',
+            borderWidth:1.5, borderDash:[4,3], pointRadius:0, fill:false, tension:0.3, spanGaps:false
+          }
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            callbacks:{
+              label:function(c){
+                if(c.parsed.y===null) return null;
+                var names=['历史','上限','预测','下限'];
+                return (names[c.datasetIndex]||'') + ': ' + c.parsed.y.toFixed(1);
+              }
+            }
+          }
+        },
+        scales:{
+          x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{maxTicksLimit:14}},
+          y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{callback:function(v){return v;}}}
+        }
+      }
+    });
+
+    // 摘要卡片
+    var sumEl = document.getElementById('pred-summary');
+    sumEl.innerHTML = '';
+    futureYears.forEach(function(yr,i){
+      sumEl.innerHTML += '<div style="background:var(--bg);border-radius:12px;padding:14px;text-align:center;">'
+        + '<div style="font-size:18px;font-weight:800;color:var(--primary)">' + futureBase[i].toFixed(1) + '</div>'
+        + '<div style="font-size:11px;color:var(--muted);margin-top:4px;">' + yr + ' 基础预测</div>'
+        + '<div style="font-size:11px;color:#64748b;margin-top:3px;">' + futureLo[i].toFixed(1) + ' – ' + futureHi[i].toFixed(1) + '</div>'
+        + '</div>';
+    });
+  };
+
+  /* ═══ SCENARIO SIMULATION ═══ */
+  // 情景参数：每年增长率 [低,中,高]
+  var SCENARIOS = {
+    bull: {label:'乐观', color:'#22c55e', rates:[0.09,0.10,0.12]},
+    base: {label:'基础', color:'#4f7dff', rates:[0.05,0.065,0.08]},
+    bear: {label:'保守', color:'#ef4444', rates:[-0.02,0.01,0.03]}
+  };
+
+  window.toggleScenario = function(card) {
+    var s = card.getAttribute('data-s');
+    var idx = activeScenarios.indexOf(s);
+    if (idx>-1 && activeScenarios.length>1) {
+      activeScenarios.splice(idx,1);
+      card.style.opacity='0.4';
+    } else if (idx===-1) {
+      activeScenarios.push(s);
+      card.style.opacity='1';
+    }
+    buildScenarioChart();
+  };
+
+  function buildScenarioChart() {
+    var startIdx = CBS_2026Q1.idx; // 153.6
+    var startPrice = CBS_2026Q1.price;
+    var years = ['2026 Q1','2026','2027','2028'];
+    var datasets = [];
+
+    activeScenarios.forEach(function(key) {
+      var sc = SCENARIOS[key];
+      var midRate = sc.rates[1];
+      var loRate  = sc.rates[0];
+      var hiRate  = sc.rates[2];
+
+      // 年化增长：从 2026Q1 外推
+      var mid = [startIdx];
+      var lo  = [startIdx];
+      var hi  = [startIdx];
+      for (var i=1;i<4;i++) {
+        mid.push(Math.round(mid[i-1]*(1+midRate)*10)/10);
+        lo.push(Math.round(lo[i-1]*(1+loRate)*10)/10);
+        hi.push(Math.round(hi[i-1]*(1+hiRate)*10)/10);
+      }
+
+      datasets.push({
+        label: sc.label + '（中）',
+        data: mid,
+        borderColor: sc.color,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        tension: 0.3,
+        fill: false
+      });
+      datasets.push({
+        label: sc.label + '（区间）',
+        data: hi,
+        borderColor: sc.color+'55',
+        backgroundColor: sc.color+'18',
+        borderWidth: 1,
+        borderDash: [4,3],
+        pointRadius: 0,
+        tension: 0.3,
+        fill: '+1'
+      });
+      datasets.push({
+        label: '',
+        data: lo,
+        borderColor: sc.color+'55',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderDash: [4,3],
+        pointRadius: 0,
+        tension: 0.3,
+        fill: false
+      });
+    });
+
+    var ctx = document.getElementById('chart-scenario').getContext('2d');
+    if (chartScenario) chartScenario.destroy();
+    chartScenario = new Chart(ctx, {
+      type: 'line',
+      data: { labels: years, datasets: datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: {mode:'index', intersect:false},
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              filter: function(item){ return item.text !== ''; },
+              boxWidth: 12, font: {size:12}
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(c){
+                if (!c.dataset.label) return null;
+                return c.dataset.label + ': ' + (c.parsed.y||0).toFixed(1);
+              }
+            }
+          }
+        },
+        scales: {
+          x: {grid:{color:'rgba(0,0,0,0.04)'}},
+          y: {
+            grid:{color:'rgba(0,0,0,0.04)'},
+            ticks:{callback:function(v){return v;}}
+          }
+        }
+      }
+    });
+
+    // 情景对比表
+    var tableEl = document.getElementById('scenario-table');
+    var rows = '';
+    ['2026','2027','2028'].forEach(function(yr, ri) {
+      rows += '<tr><td style="padding:8px 12px;font-weight:600;font-size:13px;">' + yr + '</td>';
+      ['bull','base','bear'].forEach(function(key) {
+        var sc = SCENARIOS[key];
+        var rate = sc.rates[1];
+        var val = Math.round(startIdx * Math.pow(1+rate, ri+1) * 10)/10;
+        var price = Math.round(startPrice * Math.pow(1+rate, ri+1) / 1000);
+        rows += '<td style="padding:8px 12px;text-align:center;font-size:13px;">'
+          + '<span style="font-weight:700;color:' + sc.color + '">' + val.toFixed(1) + '</span>'
+          + '<span style="color:var(--muted);font-size:11px;"> / EUR ' + price + 'k</span>'
+          + '</td>';
+      });
+      rows += '</tr>';
+    });
+    tableEl.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
+      + '<thead><tr style="border-bottom:2px solid var(--border);">'
+      + '<th style="padding:8px 12px;text-align:left;font-size:12px;color:var(--muted);">年份</th>'
+      + '<th style="padding:8px 12px;text-align:center;font-size:12px;color:#166534;">&#128200; 乐观</th>'
+      + '<th style="padding:8px 12px;text-align:center;font-size:12px;color:#1e3a8a;">&#128203; 基础</th>'
+      + '<th style="padding:8px 12px;text-align:center;font-size:12px;color:#991b1b;">&#128201; 保守</th>'
+      + '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  /* ═══ TAB SWITCH ═══ */
+  window.switchTab = function(tab) {
+    ['eval','market','city'].forEach(function(t){
+      document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+      document.getElementById('tab-'+t+'-btn').classList.toggle('active', t===tab);
+    });
+    if (tab === 'market') {
+      updateStats();
+      buildIndexChart();
+      buildCitiesChart();
+      buildVolumeChart();
+      buildPredChart();
+      buildScenarioChart();
+    }
+    if (tab === 'city') {
+      window.switchDeepCity(activeDeepCity);
+    }
+  };
+
+  /* ═══════════════════════════════════════════
+     EVAL LOGIC (unchanged)
+  ══════════════════════════════════════════════ */
+  var STORAGE_KEY = 'house_eval_v1';
+
+  function saveForm() {
+    try {
+      var data = {
+        income: document.getElementById('income').value,
+        savings: document.getElementById('savings').value,
+        budget: document.getElementById('budget').value,
+        debts: document.getElementById('debts').value,
+        years: document.getElementById('years').value,
+        job: document.getElementById('job').value,
+        city: document.getElementById('city').value,
+        purpose: document.getElementById('purpose').value,
+        checks: []
+      };
+      document.querySelectorAll('.check-item').forEach(function(el) {
+        data.checks.push(el.classList.contains('checked') ? 1 : 0);
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch(e) {}
+  }
+
+  function loadForm() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      var set = function(id, val) { var el = document.getElementById(id); if (el && val!=null) el.value = val; };
+      set('income', data.income); set('savings', data.savings); set('budget', data.budget);
+      set('debts', data.debts); set('years', data.years); set('job', data.job);
+      set('city', data.city); set('purpose', data.purpose);
+      if (data.years) document.getElementById('years-val').textContent = data.years + ' 年';
+      if (Array.isArray(data.checks)) {
+        var items = document.querySelectorAll('.check-item');
+        data.checks.forEach(function(v, i) { if (items[i] && v) items[i].classList.add('checked'); });
+      }
+    } catch(e) {}
+  }
+
+  window.toggleCheck = function(el) { el.classList.toggle('checked'); saveForm(); };
+
+  window.evaluate = function() {
+    try {
+      var income  = parseFloat(document.getElementById('income').value)  || 0;
+      var savings = parseFloat(document.getElementById('savings').value) || 0;
+      var budget  = parseFloat(document.getElementById('budget').value)  || 0;
+      var debts   = parseFloat(document.getElementById('debts').value)   || 0;
+      var years   = parseInt(document.getElementById('years').value, 10) || 5;
+      var job     = document.getElementById('job').value;
+      var city    = document.getElementById('city').value;
+      var checks  = document.querySelectorAll('.check-item.checked').length;
+
+      var errEl = document.getElementById('error-msg');
+      if (!income || !savings || !budget) { errEl.style.display = 'block'; return; }
+      errEl.style.display = 'none';
+      saveForm();
+
+      var requiredDown = budget * 0.12;
+      var downScore = Math.min(100, Math.round((savings / requiredDown) * 100));
+      var loanAmt = Math.max(0, budget - savings);
+      var mr = 0.038 / 12; var n = 360;
+      var monthlyMortgage = loanAmt > 0 ? loanAmt * (mr * Math.pow(1+mr,n)) / (Math.pow(1+mr,n)-1) : 0;
+      var monthlyIncome = income / 12;
+      var dtiRatio = monthlyIncome > 0 ? (monthlyMortgage + debts) / monthlyIncome : 1;
+      var dtiScore = dtiRatio<=0.25?100:dtiRatio<=0.35?75:dtiRatio<=0.45?45:15;
+      var yearsScore = years>=8?100:years>=5?75:years>=3?45:15;
+      var jobScore = job==='permanent'?100:job==='flex'?60:25;
+      var researchScore = Math.round((checks/5)*100);
+      var cityMap = {amsterdam:55,utrecht:60,den_haag:80,rotterdam:85,other:75};
+      var cityScore = cityMap[city]||75;
+      var weights=[0.25,0.25,0.15,0.15,0.10,0.10];
+      var scores=[downScore,dtiScore,yearsScore,jobScore,researchScore,cityScore];
+      var total = Math.round(scores.reduce(function(s,v,i){return s+v*weights[i];},0));
+
+      document.getElementById('form-section').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+
+      var circ = 364.4; var arc = document.getElementById('score-arc');
+      arc.style.transition='none'; arc.style.strokeDashoffset=String(circ);
+      setTimeout(function(){
+        arc.style.transition='stroke-dashoffset 1s ease';
+        arc.style.strokeDashoffset=String(circ-(circ*total/100));
+        arc.style.stroke=total>=70?'#22c55e':total>=45?'#f59e0b':'#ef4444';
+      },50);
+      document.getElementById('score-num').textContent=String(total);
+
+      var label,bannerClass,verdict;
+      if(total>=70){label='准备充分';bannerClass='verdict-green';verdict='<strong>从数据来看，你的情况比较适合现在买房。</strong><br>首付储备较充足，月供压力可控，居住规划也较为稳定。建议进一步核实贷款额度（找 hypotheekadviseur），并持续关注 NVM 最新季度报告，找到合适时机入手。';}
+      else if(total>=45){label='再准备一下';bannerClass='verdict-yellow';verdict='<strong>还差一点点 — 有几个维度需要加强。</strong><br>你已有一定基础，但在财务缓冲、贷款负担或市场了解方面仍有改进空间。建议暂缓 3-6 个月，重点补强弱项后再做决定。';}
+      else{label='暂时不建议';bannerClass='verdict-red';verdict='<strong>目前买房风险较高，建议等等看。</strong><br>主要风险在于：首付储备、月供压力或居住规划尚未稳定。急于购房在荷兰高价市场下容易陷入被动，建议先夯实财务基础再行动。';}
+
+      document.getElementById('score-label').textContent=label;
+      var banner=document.getElementById('verdict-banner');
+      banner.className='verdict-banner '+bannerClass; banner.innerHTML=verdict;
+
+      var dims=[
+        {label:'首付充足度',score:downScore},{label:'月供压力',score:dtiScore},
+        {label:'居住年限规划',score:yearsScore},{label:'工作稳定性',score:jobScore},
+        {label:'市场研究深度',score:researchScore},{label:'城市性价比',score:cityScore}
+      ];
+      var dimList=document.getElementById('dim-list'); dimList.innerHTML='';
+      dims.forEach(function(d){
+        var cls=d.score>=70?'bar-green':d.score>=45?'bar-yellow':'bar-red';
+        var row=document.createElement('div'); row.className='dim-row';
+        row.innerHTML='<div class="dim-label">'+d.label+'</div><div class="dim-bar-wrap"><div class="dim-bar '+cls+'" style="width:'+d.score+'%"></div></div><div class="dim-score">'+d.score+'</div>';
+        dimList.appendChild(row);
+      });
+
+      var tips=[];
+      if(downScore<70) tips.push({icon:'&#128176;',text:'首付储备偏低。荷兰购房除了首付，还需预留约 2-4% 的额外费用（过户税 kosten koper、公证费等）。建议目标储蓄至少达到房价的 <strong>12-15%</strong>。'});
+      if(dtiRatio>0.35) tips.push({icon:'&#128201;',text:'预估月供占收入比约 <strong>'+Math.round(dtiRatio*100)+'%</strong>，超出荷兰银行通常建议的 35%。可考虑降低目标房价，或增加收入/减少其他负债。'});
+      if(yearsScore<75) tips.push({icon:'&#128197;',text:'计划居住 '+years+' 年偏短。荷兰交易成本（约 5-6%）需要至少 <strong>5 年</strong>才能通过房价增长覆盖，过短的居住期容易亏损。'});
+      if(jobScore<70) tips.push({icon:'&#128203;',text:'荷兰银行对灵活合同或 ZZP 的贷款审批更严格，通常需要提供 3 年财务记录。建议先咨询专门服务 ZZP 的按揭顾问。'});
+      if(researchScore<60) tips.push({icon:'&#128202;',text:'市场研究深度不足。建议使用 <strong>CBS StatLine</strong>（看长期指数）、<strong>Kadaster 仪表盘</strong>（看最新成交量）和 <strong>OpenKadaster</strong>（查具体房子成交价）做功课。'});
+      if(city==='amsterdam'||city==='utrecht') tips.push({icon:'&#127970;',text:(city==='amsterdam'?'阿姆斯特丹':'乌得勒支')+' 是荷兰价格最高的市场之一，竞争激烈、超价率较高。建议对比 <strong>Den Haag 或 Rotterdam</strong> 是否更符合你的预算。'});
+      if(tips.length===0) tips.push({icon:'&#127919;',text:'各项指标表现良好！建议进行最后一步：预约 <strong>hypotheekadviseur</strong> 确认实际贷款额度，再正式开始看房。'});
+
+      var tipsList=document.getElementById('tips-list'); tipsList.innerHTML='';
+      tips.forEach(function(t){
+        var div=document.createElement('div'); div.className='tip-item';
+        div.innerHTML='<div class="tip-icon">'+t.icon+'</div><div>'+t.text+'</div>';
+        tipsList.appendChild(div);
+      });
+    } catch(err) {
+      var e=document.getElementById('error-msg'); e.style.display='block'; e.textContent='计算出错：'+err.message;
+    }
+  };
+
+  window.resetForm = function() {
+    document.getElementById('result').style.display='none';
+    document.getElementById('form-section').style.display='block';
+  };
+
+  /* ═══════════════════════════════════════════
+     CITY DEEP DATA
+     CBS: Kadaster 市政级年度成交均价（欧元），1995–2025（31个数据点）
+     索引 0=1995，25=2020，30=2025
+     区域数据：NVM 年度报告推算，2020–2025
+  ══════════════════════════════════════════════ */
+  var CBS_YEARS_DEEP = [];
+  for (var _cy=1995; _cy<=2025; _cy++) CBS_YEARS_DEEP.push(_cy);
+  var NATIONAL_PRICES_DEEP = CBS_DATA.map(function(d){return d.price;});
+
+  var CITY_DEEP = {
+    den_haag: {
+      name:'Den Haag', color:'#0ea5e9',
+      cbs:[74053,82775,89049,97887,113757,135368,149101,164727,172527,180313,
+           195514,210009,222556,228682,213057,227616,227392,210847,216214,223820,
+           231302,244849,266672,304781,324838,355807,411717,454312,413689,447417,465418],
+      districts:[
+        {id:'haagse_hout',name:'Haagse Hout',color:'#6366f1',m2:5500,
+         data:[{y:2020,p:365000},{y:2021,p:425000},{y:2022,p:475000},{y:2023,p:440000},{y:2024,p:462000},{y:2025,p:485000}]},
+        {id:'centrum',name:'Centrum',color:'#0ea5e9',m2:5200,
+         data:[{y:2020,p:340000},{y:2021,p:395000},{y:2022,p:430000},{y:2023,p:398000},{y:2024,p:415000},{y:2025,p:435000}]},
+        {id:'scheveningen',name:'Scheveningen',color:'#f59e0b',m2:4800,
+         data:[{y:2020,p:320000},{y:2021,p:375000},{y:2022,p:420000},{y:2023,p:390000},{y:2024,p:408000},{y:2025,p:428000}]},
+        {id:'ypenburg',name:'Leidschenveen-Ypenburg',color:'#8b5cf6',m2:5000,
+         data:[{y:2020,p:330000},{y:2021,p:385000},{y:2022,p:430000},{y:2023,p:398000},{y:2024,p:418000},{y:2025,p:440000}]},
+        {id:'segbroek',name:'Segbroek',color:'#22c55e',m2:4600,
+         data:[{y:2020,p:310000},{y:2021,p:360000},{y:2022,p:400000},{y:2023,p:370000},{y:2024,p:388000},{y:2025,p:408000}]},
+        {id:'loosduinen',name:'Loosduinen',color:'#ec4899',m2:4100,
+         data:[{y:2020,p:280000},{y:2021,p:328000},{y:2022,p:365000},{y:2023,p:338000},{y:2024,p:355000},{y:2025,p:373000}]},
+        {id:'escamp',name:'Escamp',color:'#64748b',m2:3800,
+         data:[{y:2020,p:265000},{y:2021,p:308000},{y:2022,p:342000},{y:2023,p:316000},{y:2024,p:332000},{y:2025,p:349000}]}
+      ]
+    },
+    amsterdam: {
+      name:'Amsterdam', color:'#6366f1',
+      cbs:[98008,110420,126024,151254,189227,224938,247082,251413,231768,227679,
+           238189,257215,285587,305206,280670,281206,284668,270507,256308,272438,
+           303925,358976,407670,460751,484995,510919,569890,620954,568161,617647,630621],
+      districts:[
+        {id:'centrum',name:'Centrum',color:'#6366f1',m2:8500,
+         data:[{y:2020,p:580000},{y:2021,p:650000},{y:2022,p:700000},{y:2023,p:640000},{y:2024,p:680000},{y:2025,p:715000}]},
+        {id:'zuid',name:'Zuid',color:'#0ea5e9',m2:7800,
+         data:[{y:2020,p:535000},{y:2021,p:600000},{y:2022,p:645000},{y:2023,p:590000},{y:2024,p:630000},{y:2025,p:662000}]},
+        {id:'oost',name:'Oost',color:'#22c55e',m2:6400,
+         data:[{y:2020,p:420000},{y:2021,p:475000},{y:2022,p:510000},{y:2023,p:465000},{y:2024,p:498000},{y:2025,p:524000}]},
+        {id:'west',name:'West',color:'#f59e0b',m2:6200,
+         data:[{y:2020,p:400000},{y:2021,p:452000},{y:2022,p:488000},{y:2023,p:445000},{y:2024,p:476000},{y:2025,p:502000}]},
+        {id:'noord',name:'Noord',color:'#8b5cf6',m2:5200,
+         data:[{y:2020,p:340000},{y:2021,p:385000},{y:2022,p:415000},{y:2023,p:378000},{y:2024,p:405000},{y:2025,p:427000}]},
+        {id:'nieuw_west',name:'Nieuw-West',color:'#ec4899',m2:4800,
+         data:[{y:2020,p:310000},{y:2021,p:352000},{y:2022,p:380000},{y:2023,p:346000},{y:2024,p:370000},{y:2025,p:390000}]},
+        {id:'zuidoost',name:'Zuidoost',color:'#64748b',m2:3900,
+         data:[{y:2020,p:260000},{y:2021,p:295000},{y:2022,p:318000},{y:2023,p:290000},{y:2024,p:310000},{y:2025,p:327000}]}
+      ]
+    },
+    rotterdam: {
+      name:'Rotterdam', color:'#f59e0b',
+      cbs:[67793,75175,83880,93812,105407,125288,135654,147461,150540,160230,
+           166115,177242,187465,190143,185122,187218,194038,182945,173814,185507,
+           189536,202501,227834,256793,282910,307358,364018,397864,383652,402854,414579],
+      districts:[
+        {id:'hillegersberg',name:'Hillegersberg-Schiebroek',color:'#f59e0b',m2:5200,
+         data:[{y:2020,p:325000},{y:2021,p:385000},{y:2022,p:425000},{y:2023,p:393000},{y:2024,p:415000},{y:2025,p:437000}]},
+        {id:'centrum',name:'Centrum',color:'#6366f1',m2:4800,
+         data:[{y:2020,p:290000},{y:2021,p:342000},{y:2022,p:378000},{y:2023,p:350000},{y:2024,p:370000},{y:2025,p:390000}]},
+        {id:'kralingen',name:'Kralingen-Crooswijk',color:'#0ea5e9',m2:4500,
+         data:[{y:2020,p:275000},{y:2021,p:325000},{y:2022,p:360000},{y:2023,p:333000},{y:2024,p:352000},{y:2025,p:371000}]},
+        {id:'noord',name:'Noord',color:'#22c55e',m2:4000,
+         data:[{y:2020,p:245000},{y:2021,p:290000},{y:2022,p:322000},{y:2023,p:298000},{y:2024,p:315000},{y:2025,p:332000}]},
+        {id:'delfshaven',name:'Delfshaven',color:'#8b5cf6',m2:3700,
+         data:[{y:2020,p:230000},{y:2021,p:272000},{y:2022,p:302000},{y:2023,p:279000},{y:2024,p:295000},{y:2025,p:311000}]},
+        {id:'ijsselmonde',name:'IJsselmonde',color:'#ec4899',m2:3400,
+         data:[{y:2020,p:215000},{y:2021,p:255000},{y:2022,p:283000},{y:2023,p:262000},{y:2024,p:277000},{y:2025,p:292000}]},
+        {id:'charlois',name:'Charlois',color:'#ef4444',m2:3100,
+         data:[{y:2020,p:195000},{y:2021,p:232000},{y:2022,p:258000},{y:2023,p:238000},{y:2024,p:252000},{y:2025,p:266000}]},
+        {id:'feijenoord',name:'Feijenoord',color:'#64748b',m2:2900,
+         data:[{y:2020,p:185000},{y:2021,p:220000},{y:2022,p:244000},{y:2023,p:226000},{y:2024,p:239000},{y:2025,p:252000}]}
+      ]
+    },
+    utrecht: {
+      name:'Utrecht', color:'#22c55e',
+      cbs:[85568,96925,109688,122563,148101,165717,183806,187545,197054,208120,
+           219305,230815,248002,267507,252284,252064,255878,246061,231691,238446,
+           245900,267618,307737,344018,379770,405791,469949,510980,474406,519924,549113],
+      districts:[
+        {id:'binnenstad',name:'Binnenstad',color:'#6366f1',m2:6500,
+         data:[{y:2020,p:420000},{y:2021,p:488000},{y:2022,p:540000},{y:2023,p:500000},{y:2024,p:530000},{y:2025,p:560000}]},
+        {id:'oost',name:'Oost',color:'#0ea5e9',m2:5800,
+         data:[{y:2020,p:375000},{y:2021,p:435000},{y:2022,p:482000},{y:2023,p:446000},{y:2024,p:473000},{y:2025,p:500000}]},
+        {id:'vleuten',name:'Vleuten-De Meern',color:'#22c55e',m2:5700,
+         data:[{y:2020,p:370000},{y:2021,p:430000},{y:2022,p:477000},{y:2023,p:441000},{y:2024,p:468000},{y:2025,p:494000}]},
+        {id:'leidsche_rijn',name:'Leidsche Rijn',color:'#f59e0b',m2:5500,
+         data:[{y:2020,p:355000},{y:2021,p:412000},{y:2022,p:458000},{y:2023,p:423000},{y:2024,p:449000},{y:2025,p:474000}]},
+        {id:'west',name:'West',color:'#8b5cf6',m2:5200,
+         data:[{y:2020,p:340000},{y:2021,p:395000},{y:2022,p:438000},{y:2023,p:405000},{y:2024,p:430000},{y:2025,p:454000}]},
+        {id:'noord',name:'Noord',color:'#ec4899',m2:4700,
+         data:[{y:2020,p:305000},{y:2021,p:355000},{y:2022,p:394000},{y:2023,p:364000},{y:2024,p:387000},{y:2025,p:408000}]},
+        {id:'overvecht',name:'Overvecht',color:'#64748b',m2:3700,
+         data:[{y:2020,p:240000},{y:2021,p:280000},{y:2022,p:311000},{y:2023,p:288000},{y:2024,p:305000},{y:2025,p:322000}]}
+      ]
+    }
+  };
+
+  /* ═══ CITY DEEP STATE ═══ */
+  var activeDeepCity = 'den_haag';
+  var activeDeepDistricts = null; // null = all shown
+  var chartCityHistory = null, chartDistrictBar = null, chartDistrictTrend = null;
+
+  window.switchDeepCity = function(city) {
+    activeDeepCity = city;
+    activeDeepDistricts = null;
+    // Update selector buttons
+    document.querySelectorAll('.deep-city-btn').forEach(function(btn) {
+      var c = btn.getAttribute('data-city');
+      var col = CITY_DEEP[c].color;
+      var isActive = c === city;
+      btn.classList.toggle('active', isActive);
+      btn.style.background = isActive ? col : '';
+      btn.style.borderColor = isActive ? col : col;
+      btn.style.color = isActive ? 'white' : col;
+    });
+    updateDeepKPIs();
+    buildCityHistoryChart();
+    renderDistrictCards();
+    buildDistrictBarChart();
+    buildDistrictTrendChart();
+  };
+
+  function updateDeepKPIs() {
+    var city = CITY_DEEP[activeDeepCity];
+    var cbs = city.cbs;
+    var p2025 = cbs[30];  // index 30 = year 2025
+    var p2024 = cbs[29];  // index 29 = year 2024
+    var p2020 = cbs[25];  // index 25 = year 2020
+    var pNat  = NATIONAL_PRICES_DEEP[30]; // 2025 national
+
+    var yoy    = (p2025 - p2024) / p2024 * 100;
+    var fiveYr = (p2025 - p2020) / p2020 * 100;
+    var vsNat  = (p2025 - pNat)  / pNat  * 100;
+
+    document.getElementById('dkpi-price').textContent = 'EUR ' + Math.round(p2025/1000) + 'k';
+    document.getElementById('dkpi-price').style.color = city.color;
+    document.getElementById('dkpi-price-sub').textContent = '2024: EUR ' + Math.round(p2024/1000) + 'k';
+
+    var yoyEl = document.getElementById('dkpi-yoy');
+    yoyEl.textContent = (yoy>=0?'+':'') + yoy.toFixed(1) + '%';
+    yoyEl.style.color = yoy>=0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('dkpi-yoy-sub').textContent = yoy>=0 ? '&#128200; 价格持续回升' : '&#128201; 价格小幅回调';
+    document.getElementById('dkpi-yoy-sub').style.color = yoy>=0 ? '#166534' : '#991b1b';
+    document.getElementById('dkpi-yoy-sub').innerHTML = (yoy>=0 ? '&#128200; 价格持续回升' : '&#128201; 价格小幅回调');
+
+    document.getElementById('dkpi-5yr').textContent = '+' + fiveYr.toFixed(1) + '%';
+    document.getElementById('dkpi-5yr-sub').textContent = '2020: EUR '+ Math.round(p2020/1000) +'k → 2025: EUR '+ Math.round(p2025/1000) +'k';
+
+    var vsEl = document.getElementById('dkpi-vs');
+    vsEl.textContent = (vsNat>=0?'+':'') + vsNat.toFixed(1) + '%';
+    vsEl.style.color = vsNat>=0 ? 'var(--accent)' : 'var(--green)';
+    document.getElementById('dkpi-vs-sub').textContent = (vsNat>=0?'高于':'低于') + '全国均价 EUR ' + Math.round(pNat/1000) + 'k';
+  }
+
+  function buildCityHistoryChart() {
+    var city = CITY_DEEP[activeDeepCity];
+    var labels = CBS_YEARS_DEEP.map(String);
+    var ctx = document.getElementById('chart-city-history').getContext('2d');
+    if (chartCityHistory) chartCityHistory.destroy();
+    chartCityHistory = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: city.name + ' (CBS)',
+            data: city.cbs,
+            borderColor: city.color,
+            backgroundColor: city.color + '18',
+            borderWidth: 2.5,
+            pointRadius: 2,
+            pointHoverRadius: 6,
+            fill: true,
+            tension: 0.3
+          },
+          {
+            label: '全国均价 (CBS)',
+            data: NATIONAL_PRICES_DEEP,
+            borderColor: '#94a3b8',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5,4],
+            pointRadius: 1,
+            pointHoverRadius: 5,
+            fill: false,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: {mode:'index', intersect:false},
+        plugins: {
+          legend: {position:'top', labels:{boxWidth:12, font:{size:12}}},
+          tooltip: {
+            callbacks: {
+              label: function(c) {
+                return c.dataset.label + ': EUR ' + Math.round(c.parsed.y/1000) + 'k';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {grid:{color:'rgba(0,0,0,0.04)'}, ticks:{maxTicksLimit:12}},
+          y: {
+            grid:{color:'rgba(0,0,0,0.04)'},
+            ticks:{callback:function(v){return 'EUR '+Math.round(v/1000)+'k';}}
+          }
+        }
+      }
+    });
+  }
+
+  function renderDistrictCards() {
+    var city = CITY_DEEP[activeDeepCity];
+    var grid = document.getElementById('district-grid');
+    var sorted = city.districts.slice().sort(function(a,b){
+      return b.data[b.data.length-1].p - a.data[a.data.length-1].p;
+    });
+    var prices2025 = sorted.map(function(d){return d.data[d.data.length-1].p;});
+    var median = prices2025[Math.floor(prices2025.length/2)];
+
+    grid.innerHTML = '';
+    sorted.forEach(function(d) {
+      var p2025 = d.data[d.data.length-1].p;
+      var p2024 = d.data[d.data.length-2].p;
+      var p2020 = d.data[0].p;
+      var yoy = ((p2025-p2024)/p2024*100).toFixed(1);
+      var fiveYr = ((p2025-p2020)/p2020*100).toFixed(1);
+      var yoyPfx = parseFloat(yoy)>=0 ? '+' : '';
+      var yoyCls = parseFloat(yoy)>=0 ? 'yoy-pos' : 'yoy-neg';
+      var tier, tierCls;
+      if (p2025 > median*1.2) { tier='热门/高价'; tierCls='badge-hot'; }
+      else if (p2025 > median*0.85) { tier='价格适中'; tierCls='badge-mid'; }
+      else { tier='性价比高'; tierCls='badge-afford'; }
+
+      var isActive = !activeDeepDistricts || activeDeepDistricts.indexOf(d.id)>-1;
+      var card = document.createElement('div');
+      card.className = 'district-card' + (isActive ? ' dc-active' : '');
+      card.setAttribute('data-district', d.id);
+      card.style.borderColor = isActive ? d.color : '';
+      card.onclick = function(){ window.toggleDeepDistrict(d.id); };
+      card.innerHTML =
+        '<div class="district-name"><span class="district-dot" style="background:'+d.color+'"></span>'+d.name+'</div>'
+        + '<div class="district-stats">'
+        +   '<div><div class="d-stat-val">EUR '+Math.round(p2025/1000)+'k</div><div class="d-stat-lbl">2025 均价</div></div>'
+        +   '<div><div class="d-stat-val '+yoyCls+'">'+yoyPfx+yoy+'%</div><div class="d-stat-lbl">年涨幅</div></div>'
+        +   '<div><div class="d-stat-val">&#8364;'+d.m2.toLocaleString()+'/m&#178;</div><div class="d-stat-lbl">参考单价</div></div>'
+        + '</div>'
+        + '<div style="margin-top:10px;display:flex;align-items:center;gap:8px;">'
+        +   '<span class="price-badge '+tierCls+'">'+tier+'</span>'
+        +   '<span style="font-size:11px;color:var(--muted)">5年涨幅 +'+fiveYr+'%</span>'
+        +   '<span style="font-size:10px;color:var(--muted);margin-left:auto">'+(isActive?'&#128313; 显示中':'&#128312; 已隐藏')+'</span>'
+        + '</div>';
+      grid.appendChild(card);
+    });
+  }
+
+  function buildDistrictBarChart() {
+    var city = CITY_DEEP[activeDeepCity];
+    var sorted = city.districts.slice().sort(function(a,b){
+      return b.data[b.data.length-1].p - a.data[a.data.length-1].p;
+    });
+    var ctx = document.getElementById('chart-district-bar').getContext('2d');
+    if (chartDistrictBar) chartDistrictBar.destroy();
+    chartDistrictBar = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: sorted.map(function(d){return d.name;}),
+        datasets: [{
+          label: '2025 均价',
+          data: sorted.map(function(d){return d.data[d.data.length-1].p;}),
+          backgroundColor: sorted.map(function(d){return d.color+'cc';}),
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: {display:false},
+          tooltip: {
+            callbacks: {
+              label: function(c){return 'EUR ' + Math.round(c.parsed.x/1000) + 'k';}
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid:{color:'rgba(0,0,0,0.04)'},
+            ticks:{callback:function(v){return 'EUR '+Math.round(v/1000)+'k';}}
+          },
+          y: {grid:{display:false}}
+        }
+      }
+    });
+  }
+
+  function buildDistrictTrendChart() {
+    var city = CITY_DEEP[activeDeepCity];
+    var dYears = ['2020','2021','2022','2023','2024','2025'];
+    var datasets = city.districts
+      .filter(function(d){
+        return !activeDeepDistricts || activeDeepDistricts.indexOf(d.id)>-1;
+      })
+      .map(function(d){
+        return {
+          label: d.name,
+          data: d.data.map(function(pt){return pt.p;}),
+          borderColor: d.color,
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          fill: false,
+          tension: 0.3
+        };
+      });
+
+    var ctx = document.getElementById('chart-district-trend').getContext('2d');
+    if (chartDistrictTrend) chartDistrictTrend.destroy();
+    chartDistrictTrend = new Chart(ctx, {
+      type: 'line',
+      data: {labels: dYears, datasets: datasets},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: {mode:'index', intersect:false},
+        plugins: {
+          legend: {position:'top', labels:{boxWidth:10, font:{size:11}}},
+          tooltip: {
+            callbacks: {
+              label: function(c){
+                return c.dataset.label + ': EUR ' + Math.round(c.parsed.y/1000) + 'k';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {grid:{color:'rgba(0,0,0,0.04)'}},
+          y: {
+            grid:{color:'rgba(0,0,0,0.04)'},
+            ticks:{callback:function(v){return 'EUR '+Math.round(v/1000)+'k';}}
+          }
+        }
+      }
+    });
+  }
+
+  window.toggleDeepDistrict = function(id) {
+    var city = CITY_DEEP[activeDeepCity];
+    if (!activeDeepDistricts) {
+      // All showing → deselect just this one
+      activeDeepDistricts = city.districts.map(function(d){return d.id;}).filter(function(i){return i!==id;});
+      if (!activeDeepDistricts.length) activeDeepDistricts = null;
+    } else {
+      var idx = activeDeepDistricts.indexOf(id);
+      if (idx>-1) {
+        activeDeepDistricts.splice(idx,1);
+        if (!activeDeepDistricts.length) activeDeepDistricts = null;
+      } else {
+        activeDeepDistricts.push(id);
+        if (activeDeepDistricts.length === city.districts.length) activeDeepDistricts = null;
+      }
+    }
+    // Re-render cards (to update active state) and rebuild trend chart
+    renderDistrictCards();
+    buildDistrictTrendChart();
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('eval-btn').addEventListener('click', window.evaluate);
+    document.getElementById('reset-btn').addEventListener('click', window.resetForm);
+    loadForm();
+  });
+
+})();
+</script>
+</body>
+</html>
