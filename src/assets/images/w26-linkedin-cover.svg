@@ -1,0 +1,24 @@
+<svg width="1200" height="614" viewBox="0 0 680 348" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+<rect x="0" y="0" width="680" height="348" fill="#0B0A1F"/>
+<rect x="40" y="34" width="20" height="4" rx="2" fill="#FF2E92"/>
+<rect x="62" y="34" width="20" height="4" rx="2" fill="#FF7A45"/>
+<text x="40" y="62" font-size="12.5" fill="#8E8BB0" letter-spacing="0.3">Power BI  ·  MCP  ·  Microsoft Fabric</text>
+<text x="640" y="62" text-anchor="end" font-size="12.5" fill="#8E8BB0">tiger627.github.io</text>
+<text x="40" y="116" font-size="38" font-weight="700" fill="#FFFFFF">AI can now build</text>
+<text x="40" y="160" font-size="38" font-weight="700" fill="#FFFFFF">your <tspan fill="#FF4FA0">Power BI</tspan> reports</text>
+<text x="40" y="192" font-size="16.5" fill="#C9C6E6">The model and the report — from natural language.</text>
+<rect x="40" y="204" width="158" height="24" rx="12" fill="#201D40" stroke="#3A2F5A" stroke-width="0.5"/>
+<circle cx="55" cy="216" r="3" fill="#FF7A45"/>
+<text x="64" y="220" font-size="12.5" fill="#FFB07A">Built in ~10 minutes</text>
+<rect x="32" y="238" width="616" height="98" rx="12" fill="#12102B" stroke="#2A2750" stroke-width="0.5"/>
+<line x1="48" y1="278" x2="632" y2="278" stroke="#221F45" stroke-width="0.5"/>
+<line x1="48" y1="308" x2="632" y2="308" stroke="#221F45" stroke-width="0.5"/>
+<circle cx="52" cy="254" r="3.5" fill="#FF2E92"/>
+<text x="60" y="258" font-size="11.5" fill="#C9C6E6">Actual</text>
+<circle cx="118" cy="254" r="3.5" fill="#FF7A45"/>
+<text x="126" y="258" font-size="11.5" fill="#C9C6E6">Forecast — next 3 months</text>
+<polyline points="48,300 92,309 136,322 180,323 224,324 268,313 312,276 356,325 400,272 444,294" fill="none" stroke="#FF2E92" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="444,294 510,291 576,288 632,285" fill="none" stroke="#FF7A45" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="7 5"/>
+<circle cx="444" cy="294" r="4.5" fill="#FFFFFF" stroke="#0B0A1F" stroke-width="1.5"/>
+<circle cx="632" cy="285" r="4" fill="#FF7A45"/>
+</svg>
