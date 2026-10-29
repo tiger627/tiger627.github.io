@@ -14,6 +14,12 @@ for (const post of posts) {
   if (!grouped[tag]) grouped[tag] = [];
   grouped[tag].push(post);
 }
+// Newest posts first within each category
+for (const tag in grouped) {
+  grouped[tag].sort(
+    (a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf()
+  );
+}
 const tags = Object.keys(grouped).sort();
 ---
 
