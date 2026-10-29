@@ -19,6 +19,8 @@ Today one of our production Fabric pipelines suddenly started failing with this:
 
 **"Retrieval of MWC token used for accessing storage failed… There is a problem with the Microsoft Entra ID token. Have the warehouse owner log in again. If they're unavailable, use the takeover feature."**
 
+![Pipeline activity error 2402: Retrieval of MWC token used for accessing storage failed — there is a problem with the Microsoft Entra ID token](../../assets/images/w44-mwc-token-error-2402.png)
+
 At first glance it looked like a pipeline or Warehouse connection issue. It wasn't — and the way it failed taught me two lessons.
 
 ## Testing layer by layer
