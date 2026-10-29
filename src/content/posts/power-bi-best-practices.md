@@ -28,7 +28,7 @@ Before diving in, it's worth distinguishing two things people often conflate:
 **Optimization techniques** are situational. Things like disabling referential integrity, switching storage modes, or restructuring relationships may help in one model and hurt in another. These require testing and evidence — not assumption.
 
 > "Optimization techniques must not be considered as default options or standards."  
-> — Data Goblins, *"It Depends"*
+> — Data Goblins, _"It Depends"_
 
 The practical implication: don't cargo-cult settings you read about in a blog post (including this one). Test in your specific context. Measure before and after. Compare averages, not single runs.
 
@@ -85,6 +85,7 @@ Query folding means Power Query translates your steps into a native query that r
 Check folding by right-clicking a step: if "View Native Query" is available, folding is active. The moment you apply a step that breaks folding, all subsequent steps run locally.
 
 Common folding breakers:
+
 - Merging tables from different data sources
 - Custom functions
 - Some date/time operations
@@ -217,14 +218,14 @@ If your dataset is shared (used by multiple report authors), this discipline is 
 
 The best summary of what "quality" means in a Power BI solution I've encountered is the **REAPER** framework from Data Goblins:
 
-| Letter | Principle | In Practice |
-|--------|-----------|-------------|
-| **R** | Reliable | Validated results, consistent refresh, no silent failures |
-| **E** | Efficient | No redundant transformations, optimized DAX, lean model |
-| **A** | Automated | Scheduled refresh, automated testing, no manual data steps |
-| **P** | Polished | Consistent formatting, professional layout, display folders |
-| **E** | Easy to Use | Users find answers without asking developers |
-| **R** | Robust | Handles new data, schema changes, and edge cases gracefully |
+| Letter | Principle   | In Practice                                                 |
+| ------ | ----------- | ----------------------------------------------------------- |
+| **R**  | Reliable    | Validated results, consistent refresh, no silent failures   |
+| **E**  | Efficient   | No redundant transformations, optimized DAX, lean model     |
+| **A**  | Automated   | Scheduled refresh, automated testing, no manual data steps  |
+| **P**  | Polished    | Consistent formatting, professional layout, display folders |
+| **E**  | Easy to Use | Users find answers without asking developers                |
+| **R**  | Robust      | Handles new data, schema changes, and edge cases gracefully |
 
 Quality isn't just about the data being correct. It's about the full lifecycle — from source to development to delivery to ongoing maintenance.
 
@@ -291,4 +292,4 @@ Technical quality is necessary but not sufficient. The goal is a solution that g
 
 ---
 
-*Most of the practices here are drawn from or inspired by [Data Goblins](https://data-goblins.com/articles) — one of the most practical and honest Power BI resources available. Highly recommended reading.*
+_Most of the practices here are drawn from or inspired by [Data Goblins](https://data-goblins.com/articles) — one of the most practical and honest Power BI resources available. Highly recommended reading._

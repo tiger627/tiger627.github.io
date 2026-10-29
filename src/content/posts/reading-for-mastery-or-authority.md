@@ -29,7 +29,7 @@ Once I understood his context, the article made perfect sense. And I stopped fee
 
 ## Same content, completely different use
 
-As a data and AI consultant working with Dutch SMEs, I don't need theoretical frameworks to justify decisions upward. I need insights I can use when a client asks: *"We have 15 source systems and nobody agrees on what 'customer' means — where do we start?"*
+As a data and AI consultant working with Dutch SMEs, I don't need theoretical frameworks to justify decisions upward. I need insights I can use when a client asks: _"We have 15 source systems and nobody agrees on what 'customer' means — where do we start?"_
 
 The Kahneman framework from that article — prioritize consistency before accuracy — works perfectly as a diagnostic question for that client. Not as a slide in a board deck. As a first conversation.
 
@@ -43,13 +43,13 @@ I kept assuming the problem was insufficient input. Read more, then write more.
 
 But that was never the issue. I have eight years of BI and data work across two countries. I have first-hand observations of how differently Dutch and Chinese companies approach AI. I have real conversations with clients about real problems, every week.
 
-What I was missing was a simple habit: asking *"what's the principle behind what I just observed?"*
+What I was missing was a simple habit: asking _"what's the principle behind what I just observed?"_
 
 Experience and insight are not the same thing.
 
-**Experience:** *"I've worked on data integration projects for mid-size enterprises."*
+**Experience:** _"I've worked on data integration projects for mid-size enterprises."_
 
-**Insight:** *"The hardest part of enterprise data architecture is never the technology — it's getting five departments to agree on a single definition of 'customer'."*
+**Insight:** _"The hardest part of enterprise data architecture is never the technology — it's getting five departments to agree on a single definition of 'customer'."_
 
 I had the experience. I just hadn't been converting it.
 
@@ -61,12 +61,12 @@ My practical fix: think and draft in Chinese first, where ideas flow naturally. 
 
 ## The question worth asking
 
-Before asking *"is this good content?"* — ask *"who is this written for?"*
+Before asking _"is this good content?"_ — ask _"who is this written for?"_
 
 A framework that helps a CIO justify AI investment might be useless to a consultant solving a client's data problem. The same content can serve both — but only if you're clear about what you're extracting from it.
 
 For me, the Kahneman noise framework isn't boardroom ammunition. It's a question I can now ask every client:
 
-*"Before we talk about whether your AI system is accurate — how consistent is it?"*
+_"Before we talk about whether your AI system is accurate — how consistent is it?"_
 
 That one question is worth more than 100 papers I half-read.

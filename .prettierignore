@@ -15,3 +15,5 @@
 
 # Ignore MDX files
 *.mdx
+# Standalone page, not part of the Astro site source
+public/house-eval.html

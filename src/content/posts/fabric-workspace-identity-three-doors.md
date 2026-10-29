@@ -25,7 +25,7 @@ If you haven't met Workspace Identity yet, you probably will soon — so here's 
 
 ## What is a Workspace Identity?
 
-It's an automatically managed service principal bound to a Fabric workspace (one per workspace, same name as the workspace). When you create one, Fabric creates a service principal and an app registration in Microsoft Entra ID and manages the credentials for you — no keys, no secrets, no certificates to rotate, nothing to leak. A workspace admin creates it in *Workspace settings → Workspace identity* (any workspace except My Workspace), and from then on pipelines, OneLake shortcuts, semantic models, and Dataflows Gen2 can authenticate as the workspace itself instead of as a person. (Generally available — as of 2026-07, [learn.microsoft.com](https://learn.microsoft.com/fabric/security/workspace-identity))
+It's an automatically managed service principal bound to a Fabric workspace (one per workspace, same name as the workspace). When you create one, Fabric creates a service principal and an app registration in Microsoft Entra ID and manages the credentials for you — no keys, no secrets, no certificates to rotate, nothing to leak. A workspace admin creates it in _Workspace settings → Workspace identity_ (any workspace except My Workspace), and from then on pipelines, OneLake shortcuts, semantic models, and Dataflows Gen2 can authenticate as the workspace itself instead of as a person. (Generally available — as of 2026-07, [learn.microsoft.com](https://learn.microsoft.com/fabric/security/workspace-identity))
 
 ![The Workspace identity tab in workspace settings (image: Microsoft Learn)](../../assets/images/w27-workspace-identity-settings.png)
 
@@ -39,21 +39,21 @@ On paper, the official setup is three steps: create the identity → grant it pe
 
 ### Door 1: The workspace role
 
-The docs say it plainly: *"By default, the workspace identity is not granted any workspace role."* Not even in its own workspace — being "in the same workspace" grants nothing. Add it as **Contributor** under *Manage access* (Viewer is not enough — I tested). The misleading part: your own account works because *you* have permissions. That proves nothing about the identity.
+The docs say it plainly: _"By default, the workspace identity is not granted any workspace role."_ Not even in its own workspace — being "in the same workspace" grants nothing. Add it as **Contributor** under _Manage access_ (Viewer is not enough — I tested). The misleading part: your own account works because _you_ have permissions. That proves nothing about the identity.
 
 ### Door 2: The tenant settings
 
 The exact error wording matters more than you'd think:
 
-- *"caller is **not authenticated**"* → check the tenant setting **"Service principals can call Fabric public APIs"** (Admin portal → Tenant settings → Developer settings).
-- The biggest trap hides in its scope: if it's set to *"Specific security groups"*, your Workspace Identity must be a **member of that group**. The toggle showing "Enabled" is not enough.
-- *"caller does **not have sufficient permissions**"* → that's door 1, the workspace role.
+- _"caller is **not authenticated**"_ → check the tenant setting **"Service principals can call Fabric public APIs"** (Admin portal → Tenant settings → Developer settings).
+- The biggest trap hides in its scope: if it's set to _"Specific security groups"_, your Workspace Identity must be a **member of that group**. The toggle showing "Enabled" is not enough.
+- _"caller does **not have sufficient permissions**"_ → that's door 1, the workspace role.
 
 Two errors that look like twins, two completely different fixes.
 
 ### Door 3: Objects and connections
 
-This is not door 1 again. The workspace role covers objects *inside* that workspace — but pipelines also touch things that live *outside* it: objects in **other workspaces**, and especially **data connections**. Connections don't belong to any workspace — they're managed centrally (*Manage connections and gateways*) and each one has its **own permission list, independent of workspace roles**. Classic trap: the connection works for you because *you created it* — the identity isn't on its user list at all. Add the identity under *Manage users* on each connection it needs.
+This is not door 1 again. The workspace role covers objects _inside_ that workspace — but pipelines also touch things that live _outside_ it: objects in **other workspaces**, and especially **data connections**. Connections don't belong to any workspace — they're managed centrally (_Manage connections and gateways_) and each one has its **own permission list, independent of workspace roles**. Classic trap: the connection works for you because _you created it_ — the identity isn't on its user list at all. Add the identity under _Manage users_ on each connection it needs.
 
 ## Two silent traps
 

@@ -19,7 +19,7 @@ description: The 7-question conversation I have with every client about Microsof
 
 Most companies buy Microsoft Fabric. Few actually use it well.
 
-As a data consultant, I keep having two versions of the same conversation. Before the contract: *"Should we move to Fabric at all?"* And after it: *"We have Fabric now… what exactly are we supposed to do with it?"* The answer to both is the same seven questions — walked in order: what Fabric is, whether **you** should use it, and if yes, how to run it well.
+As a data consultant, I keep having two versions of the same conversation. Before the contract: _"Should we move to Fabric at all?"_ And after it: _"We have Fabric now… what exactly are we supposed to do with it?"_ The answer to both is the same seven questions — walked in order: what Fabric is, whether **you** should use it, and if yes, how to run it well.
 
 ## 1. What is Fabric, actually?
 
@@ -44,10 +44,10 @@ In Fabric, that same chain collapses into one platform: BC data lands in OneLake
 Three that matter in practice (not the brochure list):
 
 - **Time-to-value**: no infrastructure project before the data project. A capacity + a workspace = you're building on day one.
-- **One copy of data**: OneLake shortcuts mean the warehouse, the data scientists, and Power BI read the *same* files. The "which number is right" meeting starts to disappear.
+- **One copy of data**: OneLake shortcuts mean the warehouse, the data scientists, and Power BI read the _same_ files. The "which number is right" meeting starts to disappear.
 - **The AI layer lands here first**: Copilot, agentic development, AI functions — Microsoft ships them to Fabric before anywhere else. If AI-assisted BI matters to your roadmap, this is where it happens. (as of 2026-07)
 
-## 4. Should *your* company use it?
+## 4. Should _your_ company use it?
 
 This is the question I'm actually paid to answer, and the honest answer is: **not always.** My decision checklist:
 
@@ -57,7 +57,7 @@ This is the question I'm actually paid to answer, and the honest answer is: **no
 
 And one factor I deliberately leave **off** the list: **the size of your company or data team.** I hear this concern often — "aren't we too small for Fabric?" You're not. Capacity scales from F2 to F2048; the platform fits a two-person team and a multinational alike. Size was never the deciding factor for a traditional BI platform either — don't let it decide this one.
 
-Size doesn't decide *whether* — but it does decide *how much*. For that, Microsoft provides an official [**Fabric SKU Estimator**](https://aka.ms/FabricSKUEstimator): enter your data volume, number of tables, batch frequency, users, and planned workloads, and it suggests a starting SKU. Treat it as exactly that — a starting point. My advice to every client: start with the estimate, watch real usage in the Capacity Metrics app, and resize from evidence. Starting small and scaling up beats overcommitting on day one. (Tool in preview as of 2026-07)
+Size doesn't decide _whether_ — but it does decide _how much_. For that, Microsoft provides an official [**Fabric SKU Estimator**](https://aka.ms/FabricSKUEstimator): enter your data volume, number of tables, batch frequency, users, and planned workloads, and it suggests a starting SKU. Treat it as exactly that — a starting point. My advice to every client: start with the estimate, watch real usage in the Capacity Metrics app, and resize from evidence. Starting small and scaling up beats overcommitting on day one. (Tool in preview as of 2026-07)
 
 ## 5. If yes — how do you get the most out of it?
 

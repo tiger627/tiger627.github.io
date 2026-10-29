@@ -26,23 +26,25 @@ const tags = Object.keys(grouped).sort();
 <nav class="tag-tree">
   <p class="tree-heading">Categories</p>
   <ul class="tree-list">
-    {tags.map(tag => (
-      <li>
-        <details open>
-          <summary>
-            <span class="tag-name">{tag}</span>
-            <span class="tag-count">({grouped[tag].length})</span>
-          </summary>
-          <ul class="post-list">
-            {grouped[tag].map(post => (
-              <li>
-                <a href={`/posts/${post.id}/`}>{post.data.title}</a>
-              </li>
-            ))}
-          </ul>
-        </details>
-      </li>
-    ))}
+    {
+      tags.map(tag => (
+        <li>
+          <details open>
+            <summary>
+              <span class="tag-name">{tag}</span>
+              <span class="tag-count">({grouped[tag].length})</span>
+            </summary>
+            <ul class="post-list">
+              {grouped[tag].map(post => (
+                <li>
+                  <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+      ))
+    }
   </ul>
 </nav>
 
@@ -87,7 +89,9 @@ const tags = Object.keys(grouped).sort();
     font-weight: 600;
   }
 
-  details > summary::-webkit-details-marker { display: none; }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
 
   details > summary::before {
     content: "▶";

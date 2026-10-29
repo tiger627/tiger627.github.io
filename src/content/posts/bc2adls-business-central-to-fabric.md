@@ -57,7 +57,7 @@ The fix is hidden: on the Setup page, under **Data Format**, click **"Show more"
 Two things I learned the hard way:
 
 1. It doesn't rename retroactively — you have to **re-export the schema** for it to take effect.
-2. If you've already built reports on `Customer-18`, switching to `Customer` creates a *new* table and **breaks every existing reference.** Set this before you build on top — not after.
+2. If you've already built reports on `Customer-18`, switching to `Customer` creates a _new_ table and **breaks every existing reference.** Set this before you build on top — not after.
 
 ## A few setup notes
 
@@ -96,4 +96,4 @@ BC holds your operational truth — sales, inventory, financials. Fabric is wher
 
 If you're building a data & AI practice on BC, this belongs in your toolkit.
 
-*Have you used bc2adls on a client project? What was your setup like?*
+_Have you used bc2adls on a client project? What was your setup like?_

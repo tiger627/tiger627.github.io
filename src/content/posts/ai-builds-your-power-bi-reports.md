@@ -24,7 +24,7 @@ I recently connected Microsoft's **Power BI Agentic** stack — the **Power BI M
 ## Two layers AI now works on
 
 **📊 The semantic model layer — the "brain" of the data**
-Measures, calculation logic, fields, relationships. You say *"I want a sales forecast,"* and the AI builds that logic into the model.
+Measures, calculation logic, fields, relationships. You say _"I want a sales forecast,"_ and the AI builds that logic into the model.
 
 **🎨 The report layer — the "face" of the data**
 Pages, visuals, layout, color; generate the report files; reload and screenshot in Power BI Desktop.
@@ -33,10 +33,10 @@ Pages, visuals, layout, color; generate the report files; reload and screenshot 
 
 Both layers run on the same mechanism:
 
-- **🧠 Skills** tell the AI *how* to do it — modeling and design best practices.
-- **🛠️ Tools** let the AI *actually do it* — the **Power BI Modeling MCP server** connects the agent to your live model (read the schema, create and edit measures, run DAX), while a report-authoring toolkit writes the report files and drives Power BI Desktop.
+- **🧠 Skills** tell the AI _how_ to do it — modeling and design best practices.
+- **🛠️ Tools** let the AI _actually do it_ — the **Power BI Modeling MCP server** connects the agent to your live model (read the schema, create and edit measures, run DAX), while a report-authoring toolkit writes the report files and drives Power BI Desktop.
 
-*(MCP — the Model Context Protocol — is the open standard that lets AI agents safely talk to tools like Power BI. Think of it as the "USB-C port" between AI and enterprise software.)*
+_(MCP — the Model Context Protocol — is the open standard that lets AI agents safely talk to tools like Power BI. Think of it as the "USB-C port" between AI and enterprise software.)_
 
 Together they form a loop:
 
@@ -44,7 +44,7 @@ Together they form a loop:
 
 ## One intent, two layers
 
-Take this prompt: *"Add a page with a line chart showing the next three months of sales forecast, styled like the first page."*
+Take this prompt: _"Add a page with a line chart showing the next three months of sales forecast, styled like the first page."_
 
 It spans both layers — through the **MCP server** the AI builds the forecast logic in the model, then through the report skill it renders a themed chart in the report.
 
@@ -56,7 +56,7 @@ The pink line is actual sales; the orange line is the forecast for the next thre
 
 ## What this means
 
-Modeling and report-building used to be two separate crafts, done by hand. Now technical execution is being compressed — and human value moves up, to *understanding the business problem* and *judging whether the result is right*. That is the consultant's moat in the AI era.
+Modeling and report-building used to be two separate crafts, done by hand. Now technical execution is being compressed — and human value moves up, to _understanding the business problem_ and _judging whether the result is right_. That is the consultant's moat in the AI era.
 
 One thing worth stressing: this was not the polished flow from a demo video. I ran the full loop on a real model — including the errors and fixes along the way. AI helps surface problems and outline the challenge, but solving them and owning the judgment still rests with you.
 
