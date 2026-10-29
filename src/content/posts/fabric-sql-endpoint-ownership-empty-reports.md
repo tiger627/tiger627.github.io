@@ -5,6 +5,7 @@ pubDatetime: 2026-10-29T08:00:00.000Z
 slug: fabric-sql-endpoint-ownership-empty-reports
 featured: false
 draft: false
+ogImage: "../../assets/images/w44-cover-data-there-reports-empty.png"
 tags:
   - Microsoft Fabric
   - Lakehouse
